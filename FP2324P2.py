@@ -250,9 +250,3 @@ def obtem_pedras_jogadores(g):
                     if cord not in cadeia_preto:
                         cadeia_preto += (cord),
     return (len(cadia_branco),len(cadeia_preto))
-                    
-    
-
-
-
-
