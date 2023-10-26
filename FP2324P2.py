@@ -165,17 +165,18 @@ def eh_goban(arg):
 
 def eh_intersecao_valida(g,i):
     if eh_goban(g) and eh_intersecao(i):
-        if COLUNAS.index(obtem_col(i)) in range(len(g)) and obtem_col(i)-1 in range(len(g[COLUNAS.index(obtem_col(i))])):
+        if COLUNAS.index(obtem_col(i)) in range(len(g)) and obtem_lin(i)-1 in range(len(g[COLUNAS.index(obtem_col(i))])):
             return True
     return False
 
 def goban_iguais(g1,g2):
     if eh_goban(g1) and eh_goban(g2) and len(g1) == len(g2):
-        for icol in range(g1):
-            for irow in range(icol):
-                if g1[icol][irow] == g2[icol][irow]:
-                    return True
-    return False
+        for icol in range(len(g1)):
+            for irow in range(len(g1[icol])):
+                if g1[icol][irow] != g2[icol][irow]:
+                    return False
+    return True
+   
 
 
 def goban_para_str(g):
@@ -213,7 +214,8 @@ def obtem_territorios(g):
                     if nterr not in terr:
                         terr += (nterr,)
                         inter += nterr
-    return terr       #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
+    
+    return terr   #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
 
 def obtem_adjacentes_diferentes(g,t):
     adj = ()
@@ -255,8 +257,46 @@ def obtem_pedras_jogadores(g):
 
 #Funções adicionais
 def calcula_pontos(g):
-    return obtem_pedras_jogadores(g)
+    t = obtem_territorios(g)
+    terreno_branco = ()   
+    terreno_preto = ()
+    pontos = obtem_pedras_jogadores(g)
+    for terreno in t:
+        tempcord =()
+        for cord in obtem_adjacentes_diferentes(g,terreno):
+            if cord not in tempcord:
+                tempcord += (obtem_pedra(g,cord)),
+        if not (cria_pedra_neutra() or cria_pedra_preta() in tempcord):
+            terreno_branco += (terreno)
+        if not (cria_pedra_neutra() or cria_pedra_branca() in tempcord):
+            terreno_preto += (terreno)
+    return (pontos[0]+len(terreno_branco), pontos[1]+len(terreno_preto))
 
 
+def eh_jogada_legal(g,i,p,l):
+    value = True
+    if not eh_intersecao_valida(g,i):
+        value = False
+    if obtem_pedra(g,i) is not cria_pedra_neutra():
+        value = False
+    gtemp = cria_copia_goban(g)
+    jogada(gtemp,i,p)
+    for cord in obtem_cadeia(gtemp,i):
+        for pedra in obtem_intersecoes_adjacentes(cord,obtem_ultima_intersecao(gtemp)):
+            if obtem_pedra(gtemp,pedra) not in (cria_pedra_neutra(),p):   #FIXME
+                value = False
+    if goban_iguais(gtemp,l):
+        value = False
+    
+    return value
+
+def turno_jogador():
+    pass
+
+def go():
+    pass
+
+    
+    
 
 #Ser jogada legal estar fora do território ou posição ocupada, ver se é situiação de suicidio
