@@ -52,17 +52,30 @@ import FP2324P2 as fp
 #print(tuple(fp.intersecao_para_str(i) for i in fp.obtem_adjacentes_differentes(tab,ter[0])))
 #print(fp.obtem_pedras_jogadores(tab))
  
-g = fp.cria_goban_vazio(9)
-b, p = fp.cria_pedra_branca(), fp.cria_pedra_preta()
-ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
-ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-for i in ib: fp.coloca_pedra(g, fp.str_para_intersecao(i), b)
-for i in ip: fp.coloca_pedra(g, fp.str_para_intersecao(i), p)
-cad = fp.obtem_cadeia(g, fp.cria_intersecao('F',5))
 
-liberdades = fp.obtem_adjacentes_diferentes(g, cad)
-print(cad)
+#g = fp.cria_goban_vazio(9)
+#b, p = fp.cria_pedra_branca(), fp.cria_pedra_preta()
+#ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
+#ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
+#for i in ib: fp.coloca_pedra(g, fp.str_para_intersecao(i), b)
+#for i in ip: fp.coloca_pedra(g, fp.str_para_intersecao(i), p)
+#terr = fp.obtem_territorios(g)
+#print(fp.goban_para_str(g),terr[0])
+#border = fp.obtem_adjacentes_diferentes(g, terr[0])
+#print(tuple(fp.intersecao_para_str(i) for i in border))
+
+#ib = tuple(fp.str_para_intersecao(i) \
+#for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+#ip = tuple(fp.str_para_intersecao(i) \
+#for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+#g = fp.cria_goban(9, ib, ip)
+#b = fp.cria_pedra_branca()
+#print(fp.jogada(g, fp.cria_intersecao('B', 2), b))
+#print(fp.goban_para_str(g))
+
+ib = tuple(fp.str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+ip = tuple(fp.str_para_intersecao(i) for i in ('E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+g = fp.cria_goban(9, ib, ip)
 print(fp.goban_para_str(g))
-print(tuple(fp.intersecao_para_str(i) for i in liberdades))
-
+print(fp.obtem_pedras_jogadores(g))
 

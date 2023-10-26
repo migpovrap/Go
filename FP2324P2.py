@@ -36,13 +36,13 @@ def obtem_intersecoes_adjacentes(i,l):
     #Ordem de leitura (left to right, bottom  to top)
     interadj = ()
     if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))]:
-        interadj += (COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i)),
+        interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
     if 0 < obtem_lin(i)-1 <= obtem_lin(l):
-        interadj += (obtem_col(i),obtem_lin(i)-1),
+        interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
     if COLUNAS[COLUNAS.index(obtem_col(i))+1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
-        interadj += (COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i)),
+        interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
     if obtem_lin(i)+1 <= obtem_lin(l):
-        interadj += (obtem_col(i),obtem_lin(i)+1),
+        interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)+1)),
     return interadj
     
 def ordena_intersecoes(t):
@@ -84,10 +84,8 @@ def pedra_para_str(p):
 
 #Funções de Alto nível que estão associadas a este TAD (pedra)
 def eh_pedra_jogador(p):
-    if eh_pedra_branca(p) or eh_pedra_preta(p):
-        return True
-    return False
-
+    return eh_pedra_branca(p) or eh_pedra_preta(p)
+   
 
 
 #TAD goban
@@ -152,7 +150,7 @@ def remove_pedra(g,i,):
 
 def remove_cadeia(g,t):
     for inter in t:
-        g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)] = 0
+        g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = 0
     return g
 
 def eh_goban(arg):
@@ -209,40 +207,43 @@ def obtem_territorios(g):
     inter = ()
     for icol in range(len(g)):
         for irow in range(len(g[icol])):
-            if (COLUNAS[icol],irow+1) not in inter:
+            if cria_intersecao(COLUNAS[icol],irow+1) not in inter:
                 if g[icol][irow] == 0:
-                    nterr = obtem_cadeia(g,(COLUNAS[icol],irow+1))
+                    nterr = obtem_cadeia(g,cria_intersecao(COLUNAS[icol],irow+1))
                     if nterr not in terr:
                         terr += (nterr,)
                         inter += nterr
-    
-    return terr       
+    return terr       #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
 
 def obtem_adjacentes_diferentes(g,t):
     adj = ()
     for inter in t:
         if eh_pedra_jogador(obtem_pedra(g,inter)):
             for cord in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(g)):
-                if obtem_pedra(g,cord) == cria_pedra_neutra:
+                if obtem_pedra(g,cord) not in (cria_pedra_branca(), cria_pedra_preta()):
                     if cord not in adj:
                         adj+= (cord),
         if not eh_pedra_jogador(obtem_pedra(g,inter)):
             for cord in obtem_intersecoes_adjacentes(inter, obtem_ultima_intersecao(g)):
-                 if obtem_pedra(g,cord) == cria_pedra_branca or cria_pedra_preta:
+                 if obtem_pedra(g,cord) in (cria_pedra_branca(), cria_pedra_preta()):
                     if cord not in adj:
                         adj+= (cord),
     return ordena_intersecoes(adj)
 
-def jogada(g,i,p):# Falta Verificar as liberdades e remover as pedras do jogador adversário caso necessário de acordo com as pedras
-    return coloca_pedra(g,i,p)
-
+def jogada(g,i,p):
+     coloca_pedra(g,i,p)    
+     for cord in obtem_intersecoes_adjacentes(i,obtem_ultima_intersecao(g)):
+         if obtem_pedra(g,cord) not in (0,p):
+             remove_cadeia(g,obtem_cadeia(g,cord))
+     return g
+         
 
 def obtem_pedras_jogadores(g):
     cadia_branco = ()
     cadeia_preto =()
     for icol in range(len(g)):
         for irow in range(len(g[icol])):
-            for cord in obtem_cadeia(g,(COLUNAS[icol],irow+1)):
+            for cord in obtem_cadeia(g,cria_intersecao(COLUNAS[icol],irow+1)):
                 if eh_pedra_branca(obtem_pedra(g,cord)):
                     if cord not in cadia_branco:
                         cadia_branco += (cord),
@@ -250,3 +251,12 @@ def obtem_pedras_jogadores(g):
                     if cord not in cadeia_preto:
                         cadeia_preto += (cord),
     return (len(cadia_branco),len(cadeia_preto))
+
+
+#Funções adicionais
+def calcula_pontos(g):
+    return obtem_pedras_jogadores(g)
+
+
+
+#Ser jogada legal estar fora do território ou posição ocupada, ver se é situiação de suicidio
