@@ -319,12 +319,15 @@ def go(g,tb,tp):
         pontos = calcula_pontos(go)
         print('Branco (O) tem',pontos[0],'pontos')
         print('Preto (X) tem',pontos[1],'pontos')
+        print(goban_para_str(go))
         pretopass = not turno_jogador(go, cria_pedra_preta(), goant)
         brancopass = not turno_jogador(go, cria_pedra_branca(), goant)
-
-
         goant = cria_copia_goban(go)
-    return pontos[0] > pontos[1]
+
+    if pontos[0] > pontos[1]:
+        return True
+    return False
+
 
 
 
