@@ -1,18 +1,6 @@
 import pytest 
 import sys
-project_filename = 'FP2324P2.py' # <--- Change the name projectoFP to the file name with your project
-
-
-@pytest.fixture(autouse=True)
-def run_around_tests():
-    # Code that will run before your test, for example:
-    exec(open(project_filename, encoding="utf-8").read(), globals())
-
-    # A test function will be run at this point
-    yield
-    
-    # Code that will run after your test, for example:
-
+from FP2324P2 import * # <--- Change the name projectoFP to the file name with your project
 
 class TestPublicIntersecao:
 
@@ -58,7 +46,7 @@ class TestPublicGoban:
     def test_1(self):
         with pytest.raises(ValueError) as excinfo:
             g = cria_goban_vazio(10)
-            assert "cria_goban_inicial: argumento invalido" == str(excinfo.value)
+        assert "cria_goban_vazio: argumento invalido" == str(excinfo.value)
 
     def test_2(self):
         assert eh_goban(cria_goban_vazio(9))
@@ -180,7 +168,31 @@ class TestPublicGoban:
  1 . . O . . . . . .  1
    A B C D E F G H I"""
    
-   
+    def test_12(self):
+        ref = \
+"""   A B C D E F G H I J K L M N O P Q R S
+19 . . . . . . . . . . . . . . . . . . . 19
+18 . . . . . . . . . . . . . . . . . . . 18
+17 . . . . . . . . . . . . . . . . . . . 17
+16 . . . . . . . . . . . . . . . . . . . 16
+15 . . . . . . . . . . . . . . . . . . . 15
+14 . . . . . . . . . . . . . . . . . . . 14
+13 . . . . . . . . . . . . . . . . . . . 13
+12 . . . . . . . . . . . . . . . . . . . 12
+11 . . . . . . . . . . . . . . . . . . . 11
+10 . . . . . . . . . . . . . . . . . . . 10
+ 9 . . . . . . . . . . . . . . . . . . .  9
+ 8 . . . . . . . . . . . . . . . . . . .  8
+ 7 . . . . . . . . . . . . . . . . . . .  7
+ 6 . . . . . . . . . . . . . . . . . . .  6
+ 5 . . . . . . . . . . . . . . . . . . .  5
+ 4 . . . . . . . . . . . . . . . . . . .  4
+ 3 . . . . . . . . . . . . . . . . . . .  3
+ 2 . . . . . . . . . . . . . . . . . . .  2
+ 1 . . . . . . . . . . . . . . . . . . .  1
+   A B C D E F G H I J K L M N O P Q R S"""
+        assert goban_para_str(cria_goban_vazio(19)) == ref
+        
 class TestPublicCalculaPontos:
     def test_1(self):
         ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
