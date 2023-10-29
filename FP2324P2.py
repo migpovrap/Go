@@ -185,15 +185,26 @@ def goban_para_str(g):
     i = -1
     gobanstr += '\n'
     while i >= -len(g[0]):
-        gobanstr += ' ' + str(i+len(g[0])+1) + ' '
-        for col in g:
-            if col[i] == 0:
-                gobanstr += '.'+ ' '
-            elif col[i] == 1:
-                gobanstr += 'O' + ' '
-            else:
-                gobanstr += 'X' + ' '
-        gobanstr += ' ' + str(i+len(g[0])+1)
+        if (i+len(g[0])+1) > 9:
+            gobanstr += str(i+len(g[0])+1)+' '
+            for col in g:
+                if col[i] == 0:
+                    gobanstr += '.'+ ' '
+                elif col[i] == 1:
+                    gobanstr += 'O' + ' '
+                else:
+                    gobanstr += 'X' + ' '
+            gobanstr += '' + str(i+len(g[0])+1)
+        else:
+            gobanstr += ' ' + str(i+len(g[0])+1) + ' '
+            for col in g:
+                if col[i] == 0:
+                    gobanstr += '.'+ ' '
+                elif col[i] == 1:
+                    gobanstr += 'O' + ' '
+                else:
+                    gobanstr += 'X' + ' '
+            gobanstr += ' ' + str(i+len(g[0])+1)
         gobanstr += '\n'
         i -= 1
     gobanstr += '  '
