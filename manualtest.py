@@ -95,8 +95,34 @@ import FP2324P2 as fp
 #print(fp.eh_jogada_legal(g, fp.cria_intersecao('B', 2), p, l))
 
 
-ib = tuple(fp.str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+#ib = tuple(fp.str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
 #print(fp.turno_jogador(g, fp.cria_pedra_preta(),fp.cria_goban_vazio(9)))
-ip = tuple(fp.str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-print(fp.go(9, ib, ip))
+#ip = tuple(fp.str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+#print(fp.go(9, ib, ip))
 
+#ib = tuple(fp.str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+#ip = tuple(fp.str_para_intersecao(i) for i in ('E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+#g = fp.cria_goban(9, ib, ip)
+
+#print(fp.calcula_pontos(g))
+
+ib = tuple(fp.str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+ip = tuple(fp.str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+g = fp.cria_goban(9, ib, ip)
+l = fp.cria_goban_vazio(9)
+b, p = fp.cria_pedra_branca(), fp.cria_pedra_preta()
+ref = \
+"""   A B C D E F G H I
+ 9 . . . . . . . . .  9
+ 8 . . . . . . . . .  8
+ 7 . . . . . . X . .  7
+ 6 . . . . . . X . .  6
+ 5 . . . . X X . . .  5
+ 4 . . . O X X . . .  4
+ 3 O O O O . . . . .  3
+ 2 X . O O . . . . .  2
+ 1 X X O . . . . . .  1
+   A B C D E F G H I"""
+print(fp.eh_jogada_legal(g, fp.cria_intersecao('B', 2), p, l))
+#print(fp.eh_jogada_legal(g, fp.cria_intersecao('B', 2), b, l))
+print(fp.goban_para_str(g))
