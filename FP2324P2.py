@@ -168,7 +168,7 @@ def eh_intersecao_valida(g,i):
             return True
     return False
 
-def goban_iguais(g1,g2):
+def gobans_iguais(g1,g2):
     if eh_goban(g1) and eh_goban(g2) and len(g1) == len(g2):
         for icol in range(len(g1)):
             for irow in range(len(g1[icol])):
