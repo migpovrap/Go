@@ -283,7 +283,7 @@ def calcula_pontos(g):
     return (pontos[0]+len(terreno_branco), pontos[1]+len(terreno_preto))
 
 
-def eh_jogada_legal(g,i,p,l): #FIXME não passa em todos os testes não percebe bem porquê
+def eh_jogada_legal(g,i,p,l): #Já passa os testes, mas o código está estranho
     if not eh_intersecao_valida(g,i):
         return False
     if obtem_pedra(g,i) is not cria_pedra_neutra():
@@ -291,13 +291,21 @@ def eh_jogada_legal(g,i,p,l): #FIXME não passa em todos os testes não percebe 
     gtemp = cria_copia_goban(g)
     jogada(gtemp,i,p)
     
-    if goban_iguais(gtemp,l):
-        return False
-    if i == ('B',2):
+    if gobans_iguais(gtemp,l):
         return False
     
-    if len(obtem_cadeia(gtemp, i)) == 0:
+    cadeia = obtem_cadeia(gtemp, i)
+    if len(cadeia) == 0:
         return False
+    for cord in cadeia:
+        if len(obtem_intersecoes_adjacentes(cord,obtem_ultima_intersecao(gtemp))) == 1:
+            return False
+        for cordadj in obtem_intersecoes_adjacentes(cord,obtem_ultima_intersecao(gtemp)):
+            if obtem_pedra(gtemp, cordadj) == cria_pedra_neutra():
+                return True
+            if obtem_pedra(gtemp, cordadj) == p:
+                if len(obtem_cadeia(gtemp, cordadj)) > 1:
+                    return False
     
     return True
 
