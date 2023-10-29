@@ -50,7 +50,6 @@ def ordena_intersecoes(t):
 
 
 #TAD pedra
-#Pedra [0,()] O tuplo vazio corresponde à interseção onde se localiza a pedra
 #0 --> pedra neutro
 #1 --> pedra branco
 #2 --> pedra preto
@@ -92,7 +91,7 @@ def eh_pedra_jogador(p):
 #O tabuleiro vai ser representado por uma tuplo de listas ([],[],[])
 def cria_goban_vazio(n):
     if n not in (9,13,19):
-        raise ValueError('cria_goban_vazio: argumentos invalido')
+        raise ValueError('cria_goban_vazio: argumento invalido')
     return tuple([0 for i in range(n)] for i1 in range(n))
 
 def cria_goban(n,ib,ip):
