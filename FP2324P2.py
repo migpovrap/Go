@@ -96,7 +96,7 @@ def cria_goban_vazio(n):
 
 def cria_goban(n,ib,ip):
     if n not in (9,13,19):
-        raise ValueError('cria_goban_vazio: argumentos invalido')
+        raise ValueError('cria_goban_vazio: argumento invalido')
     g = cria_goban_vazio(n)
     for inter in ib:
         if not (eh_intersecao(inter) and obtem_lin(inter) <= n):
