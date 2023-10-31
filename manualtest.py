@@ -128,7 +128,14 @@ import FP2324P2 as fp
 #print(fp.goban_para_str(g))
 
 
-print(fp.go(9,(),()))
+#print(fp.go(9,(),()))
 #print(fp.calcula_pontos(fp.cria_goban(9,(),())))
 #print(fp.obtem_pedras_jogadores(fp.cria_goban(9,(),())))
 #print(fp.obtem_territorios(fp.cria_goban(9,(),())))
+
+ib = 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'B3', 'I3', 'B4', 'D4', 'E4', 'F4', 'B5', 'D5', 'G5', 'I5', 'B6', 'D6', 'E6', 'F6', 'G6', 'I6', 'C7', 'I7', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8', 'I8'
+ip = 'C3', 'D3', 'E3', 'F3', 'G3', 'C4', 'G4', 'H4', 'C5', 'H5', 'C6', 'H6', 'D7', 'E7', 'F7', 'G7', 'H7'
+#print(fp.go(9,ib,ip))
+tbinter = tuple(fp.str_para_intersecao(i) for i in ib)
+tpinter = tuple(fp.str_para_intersecao(i) for i in ip)
+print(tbinter)

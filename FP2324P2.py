@@ -243,10 +243,20 @@ def obtem_adjacentes_diferentes(g,t):
     return ordena_intersecoes(adj)
 
 def jogada(g,i,p):
-     coloca_pedra(g,i,p)    
+     coloca_pedra(g,i,p)  
      for cord in obtem_intersecoes_adjacentes(i,obtem_ultima_intersecao(g)):
-         if obtem_pedra(g,cord) not in (0,p):
-             remove_cadeia(g,obtem_cadeia(g,cord))
+        if obtem_pedra(g,cord) not in (cria_pedra_neutra(),p): # Verifica se a pedra pertence ao jogador contrário
+            cadeia_adv = obtem_cadeia(g,cord)
+            cadeiaadv_livre = False
+            for coord in cadeia_adv:
+                for pedra in obtem_intersecoes_adjacentes(coord, obtem_ultima_intersecao(g)):
+                    if obtem_pedra(g,pedra) == cria_pedra_neutra():
+                        cadeiaadv_livre = True
+                        break
+                if cadeiaadv_livre: # Se a cadeia for livre para a execução
+                    break
+            if not cadeiaadv_livre: # Se a cadeia não for livre, vai remove-la
+                remove_cadeia(g,cadeia_adv)
      return g
          
 
@@ -293,7 +303,7 @@ def calcula_pontos(g):
     return (pontos[0]+len(terreno_branco), pontos[1]+len(terreno_preto))
 
 
-def eh_jogada_legal(g,i,p,l): #Já passa os testes, mas o código está estranho
+def eh_jogada_legal(g,i,p,l): 
     '''
     Verifica se uma jogada é legal ou não, se é um interseção válida, se esta se encontra vazia, se não estamos perante suícidio, 
     ou repetição (ko) - após resolução o tabuleiro ficar no mesmo estado em que se encontrava
@@ -315,19 +325,21 @@ def eh_jogada_legal(g,i,p,l): #Já passa os testes, mas o código está estranho
     
     if gobans_iguais(gtemp,l):
         return False
-    
+    def obtem_liberdades_cadeia(g,cadeia):
+         libertades = []
+         for cord in cadeia:
+            adj_intersecoes = obtem_intersecoes_adjacentes(cord, obtem_ultima_intersecao(g))
+            for cordadj in adj_intersecoes:
+                if obtem_pedra(g, cordadj) is cria_pedra_neutra():
+                    if cordadj not in libertades:
+                        libertades += (cordadj),
+         return libertades
     cadeia = obtem_cadeia(gtemp, i)
-    if len(cadeia) == 0:
-        return False
-    for cord in cadeia:
-        if len(obtem_intersecoes_adjacentes(cord,obtem_ultima_intersecao(gtemp))) == 1:
-            return False
-        for cordadj in obtem_intersecoes_adjacentes(cord,obtem_ultima_intersecao(gtemp)):
-            if obtem_pedra(gtemp, cordadj) == cria_pedra_neutra():
-                return True
-            if obtem_pedra(gtemp, cordadj) == p:
-                if len(obtem_cadeia(gtemp, cordadj)) > 1:
-                    return False
+    liberta = obtem_liberdades_cadeia(gtemp, cadeia)
+
+    if not liberta:  
+        return False  
+    
     
     return True
 
@@ -368,14 +380,17 @@ def go(g,tb,tp):
         return(Boolean): True se o jogador branco ganhar e False caso contrário
 
     '''
+    tbinter = tuple(str_para_intersecao(i) for i in tb)
+    tpinter = tuple(str_para_intersecao(i) for i in tp)
+
     go = ()
     goant = (cria_goban_vazio(g))
     try:
-        cria_goban(g,tb,tp)
+        cria_goban(g,tbinter,tpinter)
     except ValueError:
         raise ValueError('go: argumentos invalidos')
     else:
-        go = cria_goban(g,tb,tp)
+        go = cria_goban(g,tbinter,tpinter)
         brancopass = False
         pretopass = False
         i = 0
@@ -391,6 +406,9 @@ def go(g,tb,tp):
             brancopass = not turno_jogador(go, cria_pedra_branca(), goant)
         goant = cria_copia_goban(go)
         i += 1
+    print('Branco (O) tem',pontos[0],'pontos')
+    print('Preto (X) tem',pontos[1],'pontos')
+    print(goban_para_str(go))
 
     if pontos[0] > pontos[1]:
         return True
