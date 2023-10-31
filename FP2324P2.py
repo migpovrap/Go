@@ -413,12 +413,3 @@ def go(g,tb,tp):
     if pontos[0] > pontos[1]:
         return True
     return False
-
-
-
-
-    
-
-    
-    
-
