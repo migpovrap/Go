@@ -128,7 +128,7 @@ import FP2324P2 as fp
 #print(fp.goban_para_str(g))
 
 
-#print(fp.go(9,(),()))
-print(fp.calcula_pontos(fp.cria_goban(9,(),())))
-print(fp.obtem_pedras_jogadores(fp.cria_goban(9,(),())))
-print(fp.obtem_territorios(fp.cria_goban(9,(),())))
+print(fp.go(9,(),()))
+#print(fp.calcula_pontos(fp.cria_goban(9,(),())))
+#print(fp.obtem_pedras_jogadores(fp.cria_goban(9,(),())))
+#print(fp.obtem_territorios(fp.cria_goban(9,(),())))
