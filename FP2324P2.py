@@ -57,13 +57,15 @@ def eh_intersecao(arg):
     Returns:
             return(Boolean): Caso se trate de uma interseção vai devolver True em caso contrário Falso
     '''
-    try:
-        cria_intersecao(obtem_col(arg),obtem_lin(arg))
-    except ValueError:
-        return False
+    if type(arg) == tuple or (type(arg) == str and len(arg) == 2):
+        try:
+            cria_intersecao(obtem_col(arg),obtem_lin(arg))
+        except ValueError:
+            return False
+        else:
+            return True
     else:
-        return True
-        
+        return False   
     
     
 
@@ -129,9 +131,9 @@ def obtem_intersecoes_adjacentes(i,l):
             interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
         if COLUNAS[COLUNAS.index(obtem_col(i))+1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
             interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
-        if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
+        if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))]:
             interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
-    return  ordena_intersecoes(interadj)
+    return ordena_intersecoes(interadj)
     
 def ordena_intersecoes(t):
     '''
@@ -251,38 +253,96 @@ def eh_pedra_jogador(p):
 #TAD goban
 #O tabuleiro vai ser representado por uma tuplo de listas ([],[],[])
 def cria_goban_vazio(n):
-    if n not in (9,13,19):
+    '''
+    Cria um goban com o tamanho pertendido, seja 9x9, 13,13 ou 19x19.
+
+    Parameters:
+            n(int): O tamanho do tabuleiro de Goban pertendido
+    Returns:
+            return(tuple): O tabuleiro de Goban
+    '''
+    if type(n) == int and n in (9,13,19):
+        return tuple([0 for i in range(n)] for i1 in range(n))
+    else:
         raise ValueError('cria_goban_vazio: argumento invalido')
-    return tuple([0 for i in range(n)] for i1 in range(n))
 
 def cria_goban(n,ib,ip):
-    if n not in (9,13,19):
+    '''
+    Cria um goban com o tamanho pretendido e coloca-o no estado indicado com pedras brancas de pretas.
+
+    Parameters:
+            n(int): O tamanho do tabuleiro de Goban pertendido
+            ib(tuple): O tuplo das interseções ocupadas por pedras brancas
+            ip(tuple):  O tuplo das interseções ocupadas por pedras pretas
+    '''
+    try:
+        cria_goban_vazio(n)
+    except ValueError:
         raise ValueError('cria_goban: argumentos invalidos')
-    g = cria_goban_vazio(n)
-    for inter in ib:
-        if not (eh_intersecao(inter) and obtem_lin(inter) <= n):
+    else:
+        g = cria_goban_vazio(n)
+        if  not type(ib) == tuple:
             raise ValueError('cria_goban: argumentos invalidos')
-        g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
-    for inter in ip:
-        if not (eh_intersecao(inter) and obtem_lin(inter) <= n):
+        for inter in ib:
+            if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+                raise ValueError('cria_goban: argumentos invalidos')
+            g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
+        if not type(ip) == tuple:
             raise ValueError('cria_goban: argumentos invalidos')
-        g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_preta()
+        for inter in ip:
+            if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+                raise ValueError('cria_goban: argumentos invalidos')
+            g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_preta()
     return g
 
 def cria_copia_goban(t):
+    '''
+    Cria uma cópia independe do tabuleiro de Goban
+
+    Parameters:
+            t(tuple): O Tabuleiro de Goban
+    Returns:
+            return(tuple): Uma cópia independente do tabuleiro de Goban
+    '''
     tcopy = []
     for l in t:
         tcopy += [l.copy()]
     return tuple(tcopy)
 
 def obtem_ultima_intersecao(g):
+    '''
+    Obtem a última interseção de um determinado tabuleiro de Goban, ou seja a interseção do canto superior direito.
+
+    Parameters:
+            g(tuple): O tabuleiro de Goban
+    Returns:
+            return(tuple): A interseção correspondente
+    '''
     return (COLUNAS[len(g)-1],len(g[-1]))
 
 def obtem_pedra(g,i):
+    '''
+    Devolve a representação interna da pedra.
+
+    Parameters:
+            g(tuple): O tabuleiro de Goban
+            i(tuple): A interseção da qual queremos obter a pedra
+    '''
     return (g[COLUNAS.index(obtem_col(i))][obtem_lin(i)-1])
 
 
 def obtem_cadeia(g,i):
+    '''
+    Obtem a cadeia de pedras que passam pela interseção dada, caso a posição se encontre vazia
+    devolve a cadeia de posições livres.
+
+    Parameters:
+            g(tuplo): O tabuleiro de Goban
+            i(tuplo): A interseção em questão
+    Returns:
+            return(tuplo): O tuplo formando pelas interseções da cadeia que passa na interseção fornecida
+
+    '''
     tipo = g[COLUNAS.index(obtem_col(i))][obtem_lin(i)-1]
     igual, inter, cadeia= (i,), (), ()
     while len(igual) > 0: 
@@ -300,46 +360,116 @@ def obtem_cadeia(g,i):
             cadeiafinal += [el]
     return tuple(ordena_intersecoes(cadeiafinal)) 
 
+
 def coloca_pedra(g,i,p):
+    '''
+    Coloca a pedra numa derterminada interseção no tabuleiro de Goban.
+
+    Parameters:
+            g(tuplo): O Tabuleiro de Goban
+            i(tuplo): A interseção onde colocar a pedra
+            p(int): O tipo de pedra a colocar, ou seja o jogador que efetua a ação
+    Returns:
+            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
+    '''
     g[COLUNAS.index(obtem_col(i))][obtem_lin(i)-1] = p
     return g
 
+
 def remove_pedra(g,i,):
+    '''
+    Remove a pedra numa derterminada interseção no tabuleiro de Goban.
+
+    Parameters:
+            g(tuplo): O Tabuleiro de Goban
+            i(tuplo): A interseção onde remover a pedra
+    Returns:
+            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
+    '''
     g[COLUNAS.index(obtem_col(i))][obtem_lin(i)-1] = 0
     return g
 
+
 def remove_cadeia(g,t):
+    '''
+    Remove uma determinada cadeia do tabuleiro de Goban.
+
+    Parameters:
+            g(tuplo): O Tabuleiro de Goban
+            t(tuplo): O conjunto de interseções que formam a cadeia a ser removida
+    Returns:
+            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
+    '''
     for inter in t:
-        g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = 0
+        remove_pedra(g,inter)
     return g
 
+
 def eh_goban(arg):
+    '''
+    Verifica se o argumento fornecido é um goban.
+
+    Parameters:
+            arg(tuple): O argumento para verificar se se trata de um goban
+    Returns:
+            return(Boolean): Devolve True se o argumento for um goban e False em caso contrário
+    '''
     if type(arg) == tuple and type(arg[0]) == list:
-        if len(arg) in LINHAS and len(arg[0]) in LINHAS:
+        if len(arg) in (9,13,19) and len(arg[0]) in (9,13,19):
             for col in range(len(arg)):
                 if len(arg[col]) == len(arg[col-1]):
-                    for el in arg[col]:
-                        if el in (0,1,2):
-                            return True
+                    if len(arg) == len(arg[col]):
+                        for el in arg[col]:
+                            if el in (0,1,2):
+                                return True
     return False
 
+
 def eh_intersecao_valida(g,i):
+    '''
+    Verifica se os argumentos fornecidos são válidos e posteriormente verifica se a interseção fornecida existe no Tabuleiro de Goban.
+
+    Parameters:
+            g(tuple): O tabuleiro de Goban
+            i(tuple): A interseção para testar
+    Returns:
+            return(Boolean): Devolve True caso os argumentos sejam válidos e a interseção pertenca ao tabuleiro de goban e False em caso contrário
+    '''
     if eh_goban(g) and eh_intersecao(i):
         if COLUNAS.index(obtem_col(i)) in range(len(g)) and obtem_lin(i)-1 in range(len(g[COLUNAS.index(obtem_col(i))])):
             return True
     return False
 
+
 def gobans_iguais(g1,g2):
+    '''
+    Verifica se os dois Goban são iguais.
+
+    Parameters:
+            g1(tuplo): O primeiro tabuleiro de Go
+            g2(tuplo): O segundo tabuleiro de Go
+    Returns:
+            return(Boolean): Devolve True se os dois Gobans forem iguais e False em caso contrário
+    '''
     if eh_goban(g1) and eh_goban(g2) and len(g1) == len(g2):
         for icol in range(len(g1)):
             for irow in range(len(g1[icol])):
                 if g1[icol][irow] != g2[icol][irow]:
                     return False
+    else:
+        return False
     return True
-   
-
+               
 
 def goban_para_str(g):
+    '''
+    Transforma a representação interna do tabuleiro de goban na representação externa.
+
+    Parameters:
+            g(tuple): O tabuleiro de Goban
+    Returns:
+            return(string): A representação externa do tabuleiro de Gobans
+    '''
     gobanstr = '  '
     for icol in range(len(g)):
         gobanstr += ' ' + COLUNAS[icol]
@@ -373,8 +503,17 @@ def goban_para_str(g):
         gobanstr += ' ' + COLUNAS[icol]
     return gobanstr
 
+
 #Funções de Alto nível que estão associadas a este TAD (goban)
 def obtem_territorios(g):
+    '''
+    Obtem os territórios que existem num determinado tabuleiro de Goban, quer pertenção a um determinado jogador ou não.
+
+    Parameters:
+            g(tuple): O tabuleiro de goban
+    Returns:
+            return(tuple): Um tuplo formado pelos tuplos que cotém as interseções que formam cada território
+    '''
     terr = ()
     inter = ()
     for icol in range(len(g)):
@@ -388,7 +527,17 @@ def obtem_territorios(g):
     
     return terr   #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
 
+
 def obtem_adjacentes_diferentes(g,t):
+    '''
+    Obtem o conjunto de interseções adjacentes a um determinado território.
+
+    Parameters:
+            g(tuplo): O tabuleiro de Goban
+            t(tuplo): O território em questão
+    Returns:
+            adj(tuplo): O conjunto das interseções adjacentes diferentes ou seja a fronteira do determinado território
+    '''
     adj = ()
     for inter in t:
         if eh_pedra_jogador(obtem_pedra(g,inter)):
@@ -403,7 +552,18 @@ def obtem_adjacentes_diferentes(g,t):
                         adj+= (cord),
     return ordena_intersecoes(adj)
 
+
 def jogada(g,i,p):
+     '''
+     A função que é usada para executar uma jogada, vai colocar a pedra na posição pedida e efetuar a captura das pedras inimigas se necessário.
+
+     Parameters:
+            g(tuplo): O tabuleiro do Goban
+            i(tuplo): A interseção onde vai ser excutada a jogada
+            p(int): O tipo de pedra que vai efetuar a jogada
+    Returns:
+            g(tuplo): Devolve o próprio tabuleiro Goban, modificando-o de forma destrutiva
+     '''
      coloca_pedra(g,i,p)  
      for cord in obtem_intersecoes_adjacentes(i,obtem_ultima_intersecao(g)):
         if obtem_pedra(g,cord) not in (cria_pedra_neutra(),p): # Verifica se a pedra pertence ao jogador contrário
@@ -422,6 +582,15 @@ def jogada(g,i,p):
          
 
 def obtem_pedras_jogadores(g):
+    '''
+    Vai contar o número de interseções ocupadas por pedras de cada jogador.
+
+    Parameters:
+            g(tuplo): O tabuleiro de Goban
+    Returns:
+            return(tuplo): Um tuplo que contém o número de pedras do jogador branco e preto respetivamente (nb,np)
+
+    '''
     cadia_branco = ()
     cadeia_preto =()
     for icol in range(len(g)):

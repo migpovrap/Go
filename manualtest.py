@@ -142,4 +142,58 @@ import FP2324P2 as fp
 
 #print(fp.cria_intersecao('A',1.0))
 #print(fp.obtem_intersecoes_adjacentes(('R',9),('I',9)))
+#
+#print(fp.cria_goban(9,(('I',8)),()))
 
+#COLUNAS = ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S')
+#i1 = fp.cria_intersecao('A', 2)
+#print(tuple(fp.intersecao_para_str(i) for i in fp.obtem_intersecoes_adjacentes(i1, fp.cria_intersecao('S',19))))
+#print(fp.obtem_intersecoes_adjacentes(i1, fp.cria_intersecao('S',19)))
+
+#print(fp.cria_goban(9,(),()))
+
+
+
+
+
+
+
+def remove_cadeia(g,t):
+    '''
+    Remove uma determinada cadeia do tabuleiro de Goban.
+
+    Parameters:
+            g(tuplo): O Tabuleiro de Goban
+            t(tuplo): O conjunto de interseções que formam a cadeia a ser removida
+    Returns:
+            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
+    '''
+    for inter in t:
+        g[fp.COLUNAS.index(fp.obtem_col(inter))][fp.obtem_lin(inter)-1] = 0
+    return g
+
+
+
+g12 = ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+g1 = ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+g2 = ([0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 2, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])
+#print(fp.eh_goban(g))
+
+print(fp.gobans_iguais(g1,g12))
+
+
+
+def gobans_iguais(g1,g2):
+   value = False
+   if fp.eh_goban(g1) and fp.eh_goban(g2):
+       if len(g1) == len(g2):
+           for col in range(len(g1)): #Podemos usar o g1 ou o g2, pois já verificamos que tem o mesmo tamanho
+               if len(g1[col]) == len(g2[col]):
+                   for el in range(len(g1[col])):
+                       if g1[col][el] == g2[col][el]:
+                           value = True
+                       else:
+                           value = False
+   return value
