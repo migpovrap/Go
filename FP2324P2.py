@@ -2,48 +2,136 @@ COLUNAS = ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','
 LINHAS = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19)
 
 #TAD intersecao
-def cria_intersecao(col,lin): # Tem de ser alterado
-    if not (col in COLUNAS and lin in LINHAS):
+def cria_intersecao(col,lin):
+    '''
+    Construtor de Interseção, devolve uma interseção caso os argumentos dados cumpram as seguintes validades,
+    a col seja um caracter e a lin seja um inteiro.
+
+    Parameters:
+            col(str): Um caracter que para o jogo do goban neste caso tem de ser entre A-Z
+            lin(int): Um inteiro que corresponde a linha, para o jogo goban neste caso tem de ser entre 1 e 19
+    Returns:
+            return: devolve a interseção 
+            ValueError: ('cria_intersecao: argumentos invalidos) - caso os argumentos não possam ser validados
+
+    '''
+    if isinstance(col,(str)) and isinstance(lin,(int)):
+            if  (col in COLUNAS and lin in LINHAS):
+                return (col,lin)
+            else:
+                raise ValueError('cria_intersecao: argumentos invalidos')
+    else:
         raise ValueError('cria_intersecao: argumentos invalidos')
-    return (col,lin)
 
 
 def obtem_col(i):
+    '''
+    Função para obter a coluna de uma interseção
+
+    Parameters:
+            i(tuple): A interseção
+    Returns:
+            return: Devolve a clouna da interseção
+    '''
     return i[0]
 
 
 def obtem_lin(i):
+    '''
+    Função para obter a linha de uma interseção
+
+    Parameters:
+            i(tuple): A interseção
+    Returns:
+            return: Devolve a linha da interseção
+    '''
     return i[1]
 
 
-def eh_intersecao(arg): # Alterar usando o construtor
-    return type(arg) == tuple and obtem_col(arg) in COLUNAS and obtem_lin(arg) in LINHAS
+def eh_intersecao(arg):
+    '''
+    Determina se um determinado argumento é uma interseção ou não.
+
+    Parameters:
+            arg(any): O argumento a testar
+    Returns:
+            return(Boolean): Caso se trate de uma interseção vai devolver True em caso contrário Falso
+    '''
+    try:
+        cria_intersecao(obtem_col(arg),obtem_lin(arg))
+    except ValueError:
+        return False
+    else:
+        return True
+        
+    
+    
 
 def intersecoes_iguais(i1,i2):
+    '''
+    Verifica se duas interseções são iguais.
+
+    Parameters:
+            i1(tuplo): A primeira interseção
+            i2(tuplo): A segunda interseção
+    Returns:
+            return(Boolean): Se as interseções forem iguais devolve True caso contrário devolve Falso
+    '''
     if eh_intersecao(i1) and eh_intersecao(i2):
         return obtem_col(i1) == obtem_col(i2) and obtem_lin(i1) == obtem_lin(i2)
     return False
 
 
 def intersecao_para_str(i):
+    '''
+    Transoforma uma interseção no seu formato interno para a sua representação externa.
+
+    Parameters:
+            i(tuplo): Uma interseção
+    Returns:
+            return(str): Devolve a string que representa externamente uma interseção
+    '''
     return obtem_col(i)+str(obtem_lin(i))
 
+
 def str_para_intersecao(str):
+    '''
+    Transforma a representação externa de uma interseção na representação interna.
+
+    Parameters:
+            str(string): A string que representa a externa de uma interseção
+    Returns:
+            return(intersecao): A representação interna da interseção usando o construtor
+    '''
     return cria_intersecao(str[0],int(str[1:])) 
 
+
 #Funções de Alto nível que estão associadas a este TAD (intersecao)
+#Ordem de leitura (left to right, bottom  to top)
+
 def obtem_intersecoes_adjacentes(i,l):
-    #Ordem de leitura (left to right, bottom  to top)
+    '''
+    Obtem as interseções que se encontram nas posições adjacentes a uma detreminada interseção, sendo que estas de encontram para cima, baixo, esquerda ou direita.
+
+    Parameters:
+            i(tupel): A interseção 
+            l(tuple): A última interseção(canto superior direito) do tabuleiro de goban que estamos a considerar
+    Returns:
+            return(tupel): Um tuplo que contem as interseções adjacentes por ordem de leitura
+    '''
     interadj = ()
-    if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))]:
-        interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
-    if 0 < obtem_lin(i)-1 <= obtem_lin(l):
-        interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
-    if COLUNAS[COLUNAS.index(obtem_col(i))+1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
-        interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
-    if obtem_lin(i)+1 <= obtem_lin(l):
-        interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)+1)),
-    return interadj
+    if obtem_col(l) not in COLUNAS:
+        return ()
+    if obtem_col(i) in COLUNAS[:COLUNAS.index(obtem_col(l))+1] and obtem_lin(i) in range(1,obtem_lin(l)+1):
+        if 0 < obtem_lin(i)+1 <= obtem_lin(l):
+            interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)+1)),
+        if 0 < obtem_lin(i)-1 <= obtem_lin(l):
+            interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
+        if COLUNAS[COLUNAS.index(obtem_col(i))+1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
+            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
+        if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
+            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
+    return  ordena_intersecoes(interadj)
     
 def ordena_intersecoes(t):
     return tuple(sorted((sorted(t,key= lambda t: t[0])), key= lambda i: i[1]))
@@ -56,15 +144,19 @@ def ordena_intersecoes(t):
 
 def cria_pedra_branca():
     return 1
+
 def cria_pedra_preta():
     return 2
+
 def cria_pedra_neutra():
     return 0
 
 def eh_pedra(arg):
     return type(arg) == int and arg in (0,1,2)
+
 def eh_pedra_branca(p):
     return p == 1
+
 def eh_pedra_preta(p):
     return p== 2
 
@@ -96,7 +188,7 @@ def cria_goban_vazio(n):
 
 def cria_goban(n,ib,ip):
     if n not in (9,13,19):
-        raise ValueError('cria_goban_vazio: argumento invalido')
+        raise ValueError('cria_goban: argumentos invalidos')
     g = cria_goban_vazio(n)
     for inter in ib:
         if not (eh_intersecao(inter) and obtem_lin(inter) <= n):
