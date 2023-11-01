@@ -134,6 +134,14 @@ def obtem_intersecoes_adjacentes(i,l):
     return  ordena_intersecoes(interadj)
     
 def ordena_intersecoes(t):
+    '''
+    Ordena o tuplo fornecido de interseções de acordo com a ordem de leitura do tabuleiro de Goban.
+
+    Parameters:
+            t(tuplo): O tuplo de interseções
+    Returns:
+            return(tuplo): O mesmo tuplo mas com as interseções ordenadas
+    '''
     return tuple(sorted((sorted(t,key= lambda t: t[0])), key= lambda i: i[1]))
 
 
@@ -143,38 +151,99 @@ def ordena_intersecoes(t):
 #2 --> pedra preto
 
 def cria_pedra_branca():
+    '''
+    O construtor da pedra branca.
+
+    Returns:
+            return(int): A repersentação interna da pedra branca
+    '''
     return 1
 
 def cria_pedra_preta():
+    '''
+    O construtor da pedra preta.
+
+    Returns:
+            return(int): A repersentação interna da pedra preta
+    '''
     return 2
 
 def cria_pedra_neutra():
+    '''
+    O construtor da pedra neutra.
+
+    Returns:
+            return(int): A repersentação interna da pedra neutra
+    '''
     return 0
 
 def eh_pedra(arg):
+    '''
+    Verifica se o argumento fornecido é uma pedra de acordo com a representação interna
+
+    Returns:
+            return(Boolean): Devolve True se o argumento for uma pedra e False caso contrário 
+    '''
     return type(arg) == int and arg in (0,1,2)
 
 def eh_pedra_branca(p):
+    '''
+    Verifica se o argumento fornecido é uma pedra branca de acordo com a representação interna
+
+    Returns:
+            return(Boolean): Devolve True se o argumento for uma pedra branca e False caso contrário 
+    '''
     return p == 1
 
 def eh_pedra_preta(p):
+    '''
+    Verifica se o argumento fornecido é uma pedra preta de acordo com a representação interna
+
+    Returns:
+            return(Boolean): Devolve True se o argumento for uma pedra preta e False caso contrário 
+    '''
     return p== 2
 
 def pedras_iguais(p1,p2):
+    '''
+    Verifica se as duas pedras fornecidas são iguais.
+
+    Parameters:
+            p1(int): A primeira pedra
+            p2(int): A segunda pedra
+    Returns:
+            return(Boolean): Devolve True se as duas pedras forem iguais e False caso contrário
+    '''
     if eh_pedra(p1) and eh_pedra(p2):
         return p1 == p2
     return False
 
 def pedra_para_str(p):
-    switch = {
+    '''
+    Transforma a representação interna de pedra para a representação externa de pedra.
+
+    Parameters:
+            p(int): A representação interna da pedra
+    Returns:
+            pedras(string): A representação externa da pedra
+    '''
+    pedras = {
         0:'.',
         1:'O',
         2:'X'
     }
-    return switch[p]
+    return pedras[p]
 
 #Funções de Alto nível que estão associadas a este TAD (pedra)
 def eh_pedra_jogador(p):
+    '''
+    Verifica se uma pedra pertence a um jogador ou é um pedra neutra.
+
+    Parameters:
+            p(): A pedra em questão
+    Returns:
+            return(Boolean): Devolve True caso a pedra pertenca a um jogador e False caso não pertenca
+    '''
     return eh_pedra_branca(p) or eh_pedra_preta(p)
    
 

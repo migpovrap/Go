@@ -141,4 +141,5 @@ import FP2324P2 as fp
 #print(tbinter)
 
 #print(fp.cria_intersecao('A',1.0))
-print(fp.obtem_intersecoes_adjacentes(('R',9),('I',9)))
+#print(fp.obtem_intersecoes_adjacentes(('R',9),('I',9)))
+
