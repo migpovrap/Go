@@ -15,14 +15,14 @@ def cria_intersecao(col,lin):
             ValueError: ('cria_intersecao: argumentos invalidos) - caso os argumentos não possam ser validados
 
     '''
-    if isinstance(col,(str)) and isinstance(lin,(int)):
-            if  (col in COLUNAS and lin in LINHAS):
+    if type(col) == str and type(lin) == int:
+            if col in COLUNAS and lin in LINHAS:
                 return (col,lin)
             else:
                 raise ValueError('cria_intersecao: argumentos invalidos')
     else:
         raise ValueError('cria_intersecao: argumentos invalidos')
-
+              
 
 def obtem_col(i):
     '''
@@ -129,9 +129,9 @@ def obtem_intersecoes_adjacentes(i,l):
             interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)+1)),
         if 0 < obtem_lin(i)-1 <= obtem_lin(l):
             interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
-        if COLUNAS[COLUNAS.index(obtem_col(i))+1] in COLUNAS[:COLUNAS.index(obtem_col(l))+1]:
+        if 0 <= COLUNAS.index(obtem_col(i))+1  <= COLUNAS.index(obtem_col(l)):
             interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
-        if COLUNAS[COLUNAS.index(obtem_col(i))-1] in COLUNAS[:COLUNAS.index(obtem_col(l))]:
+        if 0 <= COLUNAS.index(obtem_col(i))-1 <= COLUNAS.index(obtem_col(l)):
             interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
     return ordena_intersecoes(interadj)
     
@@ -283,16 +283,26 @@ def cria_goban(n,ib,ip):
         g = cria_goban_vazio(n)
         if  not type(ib) == tuple:
             raise ValueError('cria_goban: argumentos invalidos')
+        intervist = () # As interseções ja visitadas(de forma a detetar se a mesma interseção existe várias vezes)
         for inter in ib:
-            if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+            if inter in ip or inter in intervist:
                 raise ValueError('cria_goban: argumentos invalidos')
-            g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
+            else:
+                if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+                    raise ValueError('cria_goban: argumentos invalidos')
+                g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
+            intervist += (inter),
         if not type(ip) == tuple:
             raise ValueError('cria_goban: argumentos invalidos')
+        intervist = () # As interseções ja visitadas(de forma a detetar se a mesma interseção existe várias vezes)
         for inter in ip:
-            if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+            if inter in ib or inter in intervist:
                 raise ValueError('cria_goban: argumentos invalidos')
-            g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_preta()
+            else:
+                if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]):
+                    raise ValueError('cria_goban: argumentos invalidos')
+                g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_preta()
+            intervist += (inter),
     return g
 
 def cria_copia_goban(t):
@@ -525,7 +535,7 @@ def obtem_territorios(g):
                         terr += (nterr,)
                         inter += nterr
     
-    return terr   #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
+    return tuple(sorted(terr, key= lambda i: i[0][1] ))  #Tem de ser ordenado no interrior por ordem de leitura e no exterior por menor para maior
 
 
 def obtem_adjacentes_diferentes(g,t):
@@ -687,11 +697,16 @@ def turno_jogador(g,p,l):
     '''
     inter = input("Escreva uma intersecao ou 'P' para passar ["+pedra_para_str(p)+"]:")
     while inter != 'P':
-        if eh_jogada_legal(g,str_para_intersecao(inter),p,l):
-            jogada(g,str_para_intersecao(inter),p)
-            return True
-        else:
+        try:
+            str_para_intersecao(inter)
+        except ValueError:
             inter = input("Escreva uma intersecao ou 'P' para passar ["+pedra_para_str(p)+"]:")
+        else:
+            if eh_jogada_legal(g,str_para_intersecao(inter),p,l):
+                jogada(g,str_para_intersecao(inter),p)
+                return True
+            else:
+                inter = input("Escreva uma intersecao ou 'P' para passar ["+pedra_para_str(p)+"]:")
     if inter == 'P':
         return False   
     return True
