@@ -209,11 +209,21 @@ def gobans_iguais(g1,g2):
 #print(fp.obtem_intersecoes_adjacentes(('B',2),('S',19)))
 
 
-ip = ("B1","A2","B2","A4","B4","C4","D4","D3","D2","D1","F1")
-ib = ("F2","F3","F4","F5","F6","E6","D6","C6","B6","A6","A8","B8","C8","D8","E8","F8","G8","H8","H7","H6","H5","H4","H3","H2","H1","I9","G7","E5","C3")
-ip = tuple(fp.str_para_intersecao(x) for x in ip)
-ib = tuple(fp.str_para_intersecao(x) for x in ib)
-g = fp.cria_goban(9,ib,ip)
+#ip = ("B1","A2","B2","A4","B4","C4","D4","D3","D2","D1","F1")
+#ib = ("F2","F3","F4","F5","F6","E6","D6","C6","B6","A6","A8","B8","C8","D8","E8","F8","G8","H8","H7","H6","H5","H4","H3","H2","H1","I9","G7","E5","C3")
+#ip = tuple(fp.str_para_intersecao(x) for x in ip)
+#ib = tuple(fp.str_para_intersecao(x) for x in ib)
+#g = fp.cria_goban(9,ib,ip)
 
 #print(fp.obtem_territorios(g))
-print(fp.go(8,('1a'),('Z8')))
+#print(fp.go(9,((2),),()))
+
+
+print('   A B C D E F G H I\n 9 . . . O . O X . .  9\n 8 . . . . O O X . .  8\n 7 . . . . O X . . .  7\n 6 . . . O O X . . .  6\n 5 . . . O X . X . .  5\n 4 O O O O X . . . .  4\n 3 . O . O X . . . .  3\n 2 . O . O X . . . .  2\n 1 . O . X . . . . .  1\n   A B C D E F G H I')
+print('   A B C D E F G H I\n 9 . . . X . X X . .  9\n 8 . . . . X X X . .  8\n 7 . . . . X X . . .  7\n 6 . . . X X X . . .  6\n 5 . . . X X . X . .  5\n 4 X X X X X . . . .  4\n 3 . X . X X . . . .  3\n 2 . X . X X . . . .  2\n 1 . X . X . . . . .  1\n   A B C D E F G H I')
+
+print('\nSegundo Error\n')
+
+print('   A B C D E F G H I\n 9 . . . . . . . . .  9\n 8 . . . . . . . . .  8\n 7 . . . . . . X . .  7\n 6 . . . . . . X . .  6\n 5 . . . . X X . . .  5\n 4 . . . . X X . . .  4\n 3 . . . . . . . . .  3\n 2 . . . . . . . . .  2\n 1 . . . . . . . . .  1\n   A B C D E F G H I')
+print('   A B C D E F G H I\n 9 . . . . . . . . .  9\n 8 . . . . . . . . .  8\n 7 . . . . . . X . .  7\n 6 . . . . . . X . .  6\n 5 . . . . X X . . .  5\n 4 . . . O X X . . .  4\n 3 O O O O . . . . .  3\n 2 . O O O . . . . .  2\n 1 . . O . . . . . .  1\n   A B C D E F G H I')
+

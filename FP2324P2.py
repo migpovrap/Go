@@ -489,9 +489,9 @@ def goban_para_str(g):
         if (i+len(g[0])+1) > 9:
             gobanstr += str(i+len(g[0])+1)+' '
             for col in g:
-                if col[i] == 0:
+                if col[i] == cria_pedra_neutra():
                     gobanstr += '.'+ ' '
-                elif col[i] == 1:
+                elif col[i] == cria_pedra_branca():
                     gobanstr += 'O' + ' '
                 else:
                     gobanstr += 'X' + ' '
@@ -499,9 +499,9 @@ def goban_para_str(g):
         else:
             gobanstr += ' ' + str(i+len(g[0])+1) + ' '
             for col in g:
-                if col[i] == 0:
+                if col[i] == cria_pedra_neutra():
                     gobanstr += '.'+ ' '
-                elif col[i] == 1:
+                elif col[i] == cria_pedra_branca():
                     gobanstr += 'O' + ' '
                 else:
                     gobanstr += 'X' + ' '
@@ -728,7 +728,7 @@ def go(g,tb,tp):
     try:
        tbinter =  tuple(str_para_intersecao(i) for i in tb)
        tpinter = tuple(str_para_intersecao(i) for i in tp)
-    except (ValueError, IndexError):
+    except (ValueError, IndexError,TypeError):
         raise ValueError('go: argumentos invalidos')
     else:
         go = ()
