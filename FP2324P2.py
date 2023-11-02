@@ -360,7 +360,7 @@ def obtem_cadeia(g,i):
         cadeia += (testcoord,)
         interigualtemp = ()
         for el in obtem_intersecoes_adjacentes(testcoord,obtem_ultima_intersecao(g)):
-            if el not in inter and g[COLUNAS.index(obtem_col(el))][obtem_lin(el)-1] == tipo:
+            if el not in inter and pedras_iguais(g[COLUNAS.index(obtem_col(el))][obtem_lin(el)-1],tipo):
                 interigualtemp += (el,)
                 inter += (el,)
         igual = igual[:-1] + interigualtemp 
@@ -489,9 +489,9 @@ def goban_para_str(g):
         if (i+len(g[0])+1) > 9:
             gobanstr += str(i+len(g[0])+1)+' '
             for col in g:
-                if col[i] == cria_pedra_neutra():
+                if pedras_iguais(col[i], cria_pedra_neutra()):
                     gobanstr += '.'+ ' '
-                elif col[i] == cria_pedra_branca():
+                elif pedras_iguais(col[i], cria_pedra_branca()):
                     gobanstr += 'O' + ' '
                 else:
                     gobanstr += 'X' + ' '
@@ -499,9 +499,9 @@ def goban_para_str(g):
         else:
             gobanstr += ' ' + str(i+len(g[0])+1) + ' '
             for col in g:
-                if col[i] == cria_pedra_neutra():
+                if pedras_iguais(col[i],cria_pedra_neutra()):
                     gobanstr += '.'+ ' '
-                elif col[i] == cria_pedra_branca():
+                elif pedras_iguais(col[i], cria_pedra_branca()):
                     gobanstr += 'O' + ' '
                 else:
                     gobanstr += 'X' + ' '
@@ -529,7 +529,7 @@ def obtem_territorios(g):
     for icol in range(len(g)):
         for irow in range(len(g[icol])):
             if cria_intersecao(COLUNAS[icol],irow+1) not in inter:
-                if g[icol][irow] == 0:
+                if pedras_iguais(g[icol][irow], cria_pedra_neutra()):
                     nterr = obtem_cadeia(g,cria_intersecao(COLUNAS[icol],irow+1))
                     if nterr not in terr:
                         terr += (nterr,)
@@ -581,7 +581,7 @@ def jogada(g,i,p):
             cadeiaadv_livre = False
             for coord in cadeia_adv:
                 for pedra in obtem_intersecoes_adjacentes(coord, obtem_ultima_intersecao(g)):
-                    if obtem_pedra(g,pedra) == cria_pedra_neutra():
+                    if pedras_iguais(obtem_pedra(g,pedra),cria_pedra_neutra()):
                         cadeiaadv_livre = True
                         break
                 if cadeiaadv_livre: # Se a cadeia for livre para a execução
@@ -753,7 +753,7 @@ def go(g,tb,tp):
             print('Branco (O) tem',pontos[0],'pontos')
             print('Preto (X) tem',pontos[1],'pontos')
             print(goban_para_str(go))
-            if i % 2 == 0:
+            if i % 2 == 0: # Determinar qual o jogador que joga a seguir (começã no zero, então par preto, impar branco)
                 pretopass = not turno_jogador(go, cria_pedra_preta(), goant)
             else:
                 brancopass = not turno_jogador(go, cria_pedra_branca(), goant)
