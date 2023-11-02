@@ -725,36 +725,44 @@ def go(g,tb,tp):
         return(Boolean): True se o jogador branco ganhar e False caso contrário
 
     '''
-    tbinter = tuple(str_para_intersecao(i) for i in tb)
-    tpinter = tuple(str_para_intersecao(i) for i in tp)
-
-    go = ()
-    goant = (cria_goban_vazio(g))
     try:
-        cria_goban(g,tbinter,tpinter)
-    except ValueError:
+       tbinter =  tuple(str_para_intersecao(i) for i in tb)
+       tpinter = tuple(str_para_intersecao(i) for i in tp)
+    except (ValueError, IndexError):
         raise ValueError('go: argumentos invalidos')
     else:
-        go = cria_goban(g,tbinter,tpinter)
-        brancopass = False
-        pretopass = False
-        i = 0
+        go = ()
+        try:
+            cria_goban_vazio(g)
+        except ValueError:
+            raise ValueError('go: argumentos invalidos')
+        else:
+            goant = (cria_goban_vazio(g))
+        try:
+            cria_goban(g,tbinter,tpinter)
+        except ValueError:
+            raise ValueError('go: argumentos invalidos')
+        else:
+            go = cria_goban(g,tbinter,tpinter)
+            brancopass = False
+            pretopass = False
+            i = 0
 
-    while not (brancopass and pretopass):
-        pontos = calcula_pontos(go)
+        while not (brancopass and pretopass):
+            pontos = calcula_pontos(go)
+            print('Branco (O) tem',pontos[0],'pontos')
+            print('Preto (X) tem',pontos[1],'pontos')
+            print(goban_para_str(go))
+            if i % 2 == 0:
+                pretopass = not turno_jogador(go, cria_pedra_preta(), goant)
+            else:
+                brancopass = not turno_jogador(go, cria_pedra_branca(), goant)
+            goant = cria_copia_goban(go)
+            i += 1
         print('Branco (O) tem',pontos[0],'pontos')
         print('Preto (X) tem',pontos[1],'pontos')
         print(goban_para_str(go))
-        if i % 2 == 0:
-            pretopass = not turno_jogador(go, cria_pedra_preta(), goant)
-        else:
-            brancopass = not turno_jogador(go, cria_pedra_branca(), goant)
-        goant = cria_copia_goban(go)
-        i += 1
-    print('Branco (O) tem',pontos[0],'pontos')
-    print('Preto (X) tem',pontos[1],'pontos')
-    print(goban_para_str(go))
 
-    if pontos[0] > pontos[1]:
-        return True
-    return False
+        if pontos[0] > pontos[1]:
+            return True
+        return False

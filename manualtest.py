@@ -215,4 +215,5 @@ ip = tuple(fp.str_para_intersecao(x) for x in ip)
 ib = tuple(fp.str_para_intersecao(x) for x in ib)
 g = fp.cria_goban(9,ib,ip)
 
-print(fp.obtem_territorios(g))
+#print(fp.obtem_territorios(g))
+print(fp.go(8,('1a'),('Z8')))
