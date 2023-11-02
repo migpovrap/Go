@@ -490,21 +490,21 @@ def goban_para_str(g):
             gobanstr += str(i+len(g[0])+1)+' '
             for col in g:
                 if pedras_iguais(col[i], cria_pedra_neutra()):
-                    gobanstr += '.'+ ' '
+                    gobanstr += pedra_para_str(col[i])+ ' '
                 elif pedras_iguais(col[i], cria_pedra_branca()):
-                    gobanstr += 'O' + ' '
+                    gobanstr += pedra_para_str(col[i]) + ' '
                 else:
-                    gobanstr += 'X' + ' '
+                    gobanstr += pedra_para_str(col[i]) + ' '
             gobanstr += '' + str(i+len(g[0])+1)
         else:
             gobanstr += ' ' + str(i+len(g[0])+1) + ' '
             for col in g:
                 if pedras_iguais(col[i],cria_pedra_neutra()):
-                    gobanstr += '.'+ ' '
+                    gobanstr += pedra_para_str(col[i]) + ' '
                 elif pedras_iguais(col[i], cria_pedra_branca()):
-                    gobanstr += 'O' + ' '
+                    gobanstr += pedra_para_str(col[i]) + ' '
                 else:
-                    gobanstr += 'X' + ' '
+                    gobanstr += pedra_para_str(col[i]) + ' '
             gobanstr += ' ' + str(i+len(g[0])+1)
         gobanstr += '\n'
         i -= 1
