@@ -245,4 +245,10 @@ def gobans_iguais(g1,g2):
 #ip = ('A1','B1','C1','D1','F1','C4','D4','E4','E6','F6','A2','B2','C2','D2','F2','F3','C7','D7','G7','C8','G8','C9','D9')
 #print(fp.go(9,ib,ip))
 
-print(fp.eh_goban(((['A',[1],2],1),True)))
+#print(fp.eh_goban(((['A',[1],2],1),True)))
+
+'   A B C D E F G H I\n 9 . . . O . O X . .  9\n 8 . . . . O O X . .  8\n 7 . . . . O X . . .  7\n 6 . . . O O X . . .  6\n 5 . . . O X . X . .  5\n 4 O O O O X . . . .  4\n 3 . O . O X . . . .  3\n 2 . O . O X . . . .  2\n 1 . O . X . . . . .  1\n   A B C D E F G H I' 
+'   A B C D E F G H I\n 9 X X X O X O X X X  9\n 8 X X X X O O X X X  8\n 7 X X X X O X X X X  7\n 6 X X X O O X X X X  6\n 5 X X X O X X X X X  5\n 4 O O O O X X X X X  4\n 3 X O X O X X X X X  3\n 2 X O X O X X X X X  2\n 1 X O X X X X X X X  1\n   A B C D E F G H I'
+
+
+print(fp.obtem_territorios(3))
