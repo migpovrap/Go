@@ -465,7 +465,7 @@ def gobans_iguais(g1,g2) -> bool:
         if len(g1) == len(g2):
             for icol in range(len(g1)):
                 for irow in range(len(g1[icol])):
-                    if not pedras_iguais(g1[icol][irow], g2[icol][irow]):
+                    if g1[icol][irow] != g2[icol][irow]:
                         return False
         else:
             return False
