@@ -1,7 +1,7 @@
 import pytest
 import sys
 project_filename = 'FP2324P2.py'
-TAD_CODE_PATH = '/Users/miguelraposo/Developer/FP/PRJ2/TAD_code'
+TAD_CODE_PATH = './TAD_code'
 # from projectoFP import *
 
 @pytest.fixture(autouse=True)

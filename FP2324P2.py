@@ -111,7 +111,7 @@ def str_para_intersecao(str:str):
 #Funções de Alto nível que estão associadas a este TAD (intersecao)
 #Ordem de leitura (left to right, bottom  to top)
 
-def obtem_intersecoes_adjacentes(i,l):
+def obtem_intersecoes_adjacentes(i, l):
     '''
     Obtem as interseções que se encontram nas posições adjacentes a uma detreminada interseção, sendo que estas de encontram para cima, baixo, esquerda ou direita.
 
@@ -124,15 +124,15 @@ def obtem_intersecoes_adjacentes(i,l):
     interadj = ()
     if obtem_col(l) not in COLUNAS: # Se a letra não se encontrar nas permitadas (A-S), devolve vazio
         return ()
-    if obtem_col(i) in COLUNAS[:COLUNAS.index(obtem_col(l))+1] and obtem_lin(i) in range(1,obtem_lin(l)+1): #Ve se a interseção dada se encontra dentro do atual goban, tamanho estabelecido pela interseção do canto superior direito
+    if obtem_col(i) in COLUNAS[:COLUNAS.index(obtem_col(l))+1] and obtem_lin(i) in range(1, obtem_lin(l)+1): #Ve se a interseção dada se encontra dentro do atual goban, tamanho estabelecido pela interseção do canto superior direito
         if 0 < obtem_lin(i)+1 <= obtem_lin(l): #Verifica se a interseção a cima se enontra nos limites estabelecidos por l
-            interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)+1)),
+            interadj += (cria_intersecao(obtem_col(i), obtem_lin(i)+1)),
         if 0 < obtem_lin(i)-1 <= obtem_lin(l): #Verifica se a interseção em baixo se enontra nos limites estabelecidos por l
-            interadj += (cria_intersecao(obtem_col(i),obtem_lin(i)-1)),
-        if 0 <= COLUNAS.index(obtem_col(i))+1  <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a direita se encontra dentro dos limites de l 
-            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1],obtem_lin(i))),
-        if 0 <= COLUNAS.index(obtem_col(i))-1 <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a esquerda se encontra dentro dos limites de l 
-            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1],obtem_lin(i))),
+            interadj += (cria_intersecao(obtem_col(i), obtem_lin(i)-1)),
+        if 0 <= COLUNAS.index(obtem_col(i)) + 1 < len(COLUNAS) and COLUNAS.index(obtem_col(i)) + 1 <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a direita se encontra dentro dos limites de l 
+            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1], obtem_lin(i))),
+        if 0 <= COLUNAS.index(obtem_col(i)) - 1 >= 0 and COLUNAS.index(obtem_col(i)) - 1 <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a esquerda se encontra dentro dos limites de l 
+            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1], obtem_lin(i))),
     return ordena_intersecoes(interadj)
     
 def ordena_intersecoes(t):
@@ -281,7 +281,7 @@ def cria_goban(n:int,ib:tuple,ip:tuple):
         raise ValueError('cria_goban: argumentos invalidos')
     else:
         g = cria_goban_vazio(n)
-        if  not type(ib) == tuple:
+        if  not type(ib) == tuple or not type(ip) == tuple:
             raise ValueError('cria_goban: argumentos invalidos')
         intervist = () # As interseções ja visitadas(de forma a detetar se a mesma interseção existe várias vezes)
         for inter in ib:
@@ -292,8 +292,6 @@ def cria_goban(n:int,ib:tuple,ip:tuple):
                     raise ValueError('cria_goban: argumentos invalidos')
                 g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
             intervist += (inter),
-        if not type(ip) == tuple:
-            raise ValueError('cria_goban: argumentos invalidos')
         intervist = () # As interseções ja visitadas(de forma a detetar se a mesma interseção existe várias vezes)
         for inter in ip:
             if inter in ib or inter in intervist:
@@ -424,14 +422,15 @@ def eh_goban(arg) -> bool:
     Returns:
             return(Boolean): Devolve True se o argumento for um goban e False em caso contrário
     '''
-    if type(arg) == tuple and type(arg[0]) == list:
-        if len(arg) in (9,13,19) and len(arg[0]) in (9,13,19):
-            for col in range(len(arg)):
-                if len(arg[col]) == len(arg[col-1]):
-                    if len(arg) == len(arg[col]):
-                        for el in arg[col]:
-                            if el in (0,1,2):
-                                return True
+    if type(arg) == tuple and len(arg) != 0:
+        if type(arg[0]) == list:
+            if len(arg) in (9,13,19) and len(arg[0]) in (9,13,19):
+                for col in range(len(arg)):
+                    if len(arg[col]) == len(arg[col-1]):
+                        if len(arg) == len(arg[col]):
+                            for el in arg[col]:
+                                if el in (0,1,2):
+                                    return True
     return False
 
 
@@ -712,7 +711,7 @@ def turno_jogador(g,p,l) -> bool:
     return True
 
 
-def go(g,tb,tp):
+def go(g: int, tb: 'tuple[str,...]', tp: 'tuple[str,   ]') -> bool:
     '''
     Função principal que premite a duas pessoas o jogar um jogo de goban completo
 
@@ -725,28 +724,43 @@ def go(g,tb,tp):
         return(Boolean): True se o jogador branco ganhar e False caso contrário
 
     '''
+    if not isinstance(tp, tuple) or not isinstance(tb,tuple):
+        raise ValueError('go: argumentos invalidos')
+    tbinter = []
+    tpinter = []
+
+    for interb in tb:
+        if isinstance(interb,str):
+            try:
+                tbinter.append(str_para_intersecao(interb))
+            except ValueError as e:
+                raise ValueError('go: argumentos invalidos') from e
+        else:
+            tbinter.append(interb)
+    for interp in tp:
+        if isinstance(interp,str):
+            try:
+                tpinter.append(str_para_intersecao(interp))
+            except ValueError as e:
+                raise ValueError('go: argumentos invalidos') from e
+        else:
+            tpinter.append(interp)
+
     try:
-       tbinter =  tuple(str_para_intersecao(i) for i in tb)
-       tpinter = tuple(str_para_intersecao(i) for i in tp)
+        cria_goban_vazio(g)
+    except (ValueError,IndexError,TypeError):
+        raise ValueError('go: argumentos invalidos')
+    else:
+        goant = (cria_goban_vazio(g))
+    try:
+        cria_goban(g,tuple(tbinter),tuple(tpinter))
     except (ValueError, IndexError,TypeError):
         raise ValueError('go: argumentos invalidos')
     else:
-        go = ()
-        try:
-            cria_goban_vazio(g)
-        except ValueError:
-            raise ValueError('go: argumentos invalidos')
-        else:
-            goant = (cria_goban_vazio(g))
-        try:
-            cria_goban(g,tbinter,tpinter)
-        except ValueError:
-            raise ValueError('go: argumentos invalidos')
-        else:
-            go = cria_goban(g,tbinter,tpinter)
-            brancopass = False
-            pretopass = False
-            i = 0
+        go = cria_goban(g,tuple(tbinter),tuple(tpinter))
+        brancopass = False
+        pretopass = False
+        i = 0
 
         while not (brancopass and pretopass):
             pontos = calcula_pontos(go)

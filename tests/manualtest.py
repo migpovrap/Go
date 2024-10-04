@@ -251,4 +251,11 @@ def gobans_iguais(g1,g2):
 '   A B C D E F G H I\n 9 X X X O X O X X X  9\n 8 X X X X O O X X X  8\n 7 X X X X O X X X X  7\n 6 X X X O O X X X X  6\n 5 X X X O X X X X X  5\n 4 O O O O X X X X X  4\n 3 X O X O X X X X X  3\n 2 X O X O X X X X X  2\n 1 X O X X X X X X X  1\n   A B C D E F G H I'
 
 
-print(fp.obtem_territorios(3))
+#print(fp.obtem_territorios(3))
+
+#print(fp.eh_goban(()))
+#not eh_goban(()) and  not eh_goban({}) and not eh_goban([])
+
+ib = 'B7', 'B8', 'C6', 'D6', 'D8', 'E7', 'E9', 'F7', 'F8', 'F9', 'A5', 'B5', 'A3', 'B3', 'C3', 'D3', 'E3'
+ip = 'C7', 'C8', 'C9', 'D7', 'D9', 'E6', 'F6', 'G7', 'G8', 'C4', 'D4', 'E4', 'A1', 'B1', 'C1', 'D1', 'F1', 'A2', 'B2', 'C2', 'D2', 'F2', 'F3'
+fp.go(9,ib,ip)
