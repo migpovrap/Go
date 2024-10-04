@@ -633,7 +633,7 @@ def calcula_pontos(g) -> tuple:
     terreno_preto = ()
     pontos = obtem_pedras_jogadores(g)
     for terreno in t:
-        temppedras =()
+        temppedras = ()
         for cord in obtem_adjacentes_diferentes(g,terreno):
             if cord not in temppedras:
                 temppedras += (obtem_pedra(g,cord)),
@@ -658,26 +658,20 @@ def eh_jogada_legal(g,i,p,l) -> bool:
     Returns:
             return(Boolean): Vai devolver True se a jogada for legal ou Falso caso contrário
     '''
-    if not eh_intersecao_valida(g,i): 
+    if not eh_intersecao_valida(g, i) or \
+    eh_pedra_jogador(obtem_pedra(g, i)):
         return False
-    if obtem_pedra(g,i) is not cria_pedra_neutra():
+
+    copy_goban = cria_copia_goban(g)
+    jogada(copy_goban, i, p)
+
+    # Verifica a o estado KO's que acontece qunado apos uma jogada obtemos o mesmo tabuleiro
+    if gobans_iguais(copy_goban, l):
         return False
-    gtemp = cria_copia_goban(g)
-    jogada(gtemp,i,p)
-    
-    if gobans_iguais(gtemp,l):
+
+    # Verifica a regra do suicidio
+    if not obtem_adjacentes_diferentes(copy_goban,obtem_cadeia(copy_goban,i)):
         return False
-    def obtem_liberdades_cadeia(g,cadeia): #Função auxiliar para obter as liberdades de cada cadeia, se não tiver liberdades a lista devolvida é vazia
-         libertades = []
-         for cord in cadeia:
-            adj_intersecoes = obtem_intersecoes_adjacentes(cord, obtem_ultima_intersecao(g))
-            for cordadj in adj_intersecoes:
-                if obtem_pedra(g, cordadj) == cria_pedra_neutra():
-                    if cordadj not in libertades:
-                        libertades += (cordadj),
-         return libertades
-    if not obtem_liberdades_cadeia(gtemp, obtem_cadeia(gtemp, i)):  # Se a lista libedades estiver vazia então esta fica sem liberdades e a jogada é ilegal retona False
-        return False  
     return True
 
 

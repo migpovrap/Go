@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the parent directory to the Python path
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
 import FP2324P2 as fp
 
 
@@ -259,3 +265,5 @@ def gobans_iguais(g1,g2):
 ib = 'B7', 'B8', 'C6', 'D6', 'D8', 'E7', 'E9', 'F7', 'F8', 'F9', 'A5', 'B5', 'A3', 'B3', 'C3', 'D3', 'E3'
 ip = 'C7', 'C8', 'C9', 'D7', 'D9', 'E6', 'F6', 'G7', 'G8', 'C4', 'D4', 'E4', 'A1', 'B1', 'C1', 'D1', 'F1', 'A2', 'B2', 'C2', 'D2', 'F2', 'F3'
 fp.go(9,ib,ip)
+
+#'E8\nD8\nE2\nE1\nD8\nE8\nB4\nA4\nE8\nP\nP\n'

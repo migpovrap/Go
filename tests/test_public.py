@@ -1,5 +1,10 @@
 import pytest 
 import sys
+import os
+
+# Add the parent directory to the Python path
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, parent_dir)
 from FP2324P2 import * # <--- Change the name projectoFP to the file name with your project
 
 class TestPublicIntersecao:
