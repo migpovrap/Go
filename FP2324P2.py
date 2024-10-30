@@ -121,19 +121,18 @@ def obtem_intersecoes_adjacentes(i, l):
     Returns:
             return(tupel): Um tuplo que contem as interseções adjacentes por ordem de leitura
     '''
-    interadj = ()
-    if obtem_col(l) not in COLUNAS: # Se a letra não se encontrar nas permitadas (A-S), devolve vazio
-        return ()
-    if obtem_col(i) in COLUNAS[:COLUNAS.index(obtem_col(l))+1] and obtem_lin(i) in range(1, obtem_lin(l)+1): #Ve se a interseção dada se encontra dentro do atual goban, tamanho estabelecido pela interseção do canto superior direito
-        if 0 < obtem_lin(i)+1 <= obtem_lin(l): #Verifica se a interseção a cima se enontra nos limites estabelecidos por l
-            interadj += (cria_intersecao(obtem_col(i), obtem_lin(i)+1)),
-        if 0 < obtem_lin(i)-1 <= obtem_lin(l): #Verifica se a interseção em baixo se enontra nos limites estabelecidos por l
-            interadj += (cria_intersecao(obtem_col(i), obtem_lin(i)-1)),
-        if 0 <= COLUNAS.index(obtem_col(i)) + 1 < len(COLUNAS) and COLUNAS.index(obtem_col(i)) + 1 <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a direita se encontra dentro dos limites de l 
-            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))+1], obtem_lin(i))),
-        if 0 <= COLUNAS.index(obtem_col(i)) - 1 >= 0 and COLUNAS.index(obtem_col(i)) - 1 <= COLUNAS.index(obtem_col(l)): #Verifica se a interseção a esquerda se encontra dentro dos limites de l 
-            interadj += (cria_intersecao(COLUNAS[COLUNAS.index(obtem_col(i))-1], obtem_lin(i))),
-    return ordena_intersecoes(interadj)
+    vec_adjacente = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    interadj = []
+
+    for vec in vec_adjacente:
+        col_index = COLUNAS.index(obtem_col(i)) + vec[0]
+        lin = obtem_lin(i) + vec[1]
+        if 0 <= col_index < len(COLUNAS) and 1 <= lin <= obtem_lin(l):
+            col = COLUNAS[col_index]
+            if col <= obtem_col(l):
+                interadj.append(cria_intersecao(col, lin))
+
+    return ordena_intersecoes(tuple(interadj))
     
 def ordena_intersecoes(t):
     '''
@@ -145,7 +144,6 @@ def ordena_intersecoes(t):
             return(tuplo): O mesmo tuplo mas com as interseções ordenadas
     '''
     return tuple(sorted((sorted(t,key= lambda t: t[0])), key= lambda i: i[1]))
-
 
 #TAD pedra
 #0 --> pedra neutro
@@ -186,7 +184,7 @@ def eh_pedra(arg:int) -> bool:
     Returns:
             return(Boolean): Devolve True se o argumento for uma pedra e False caso contrário 
     '''
-    return type(arg) == int and arg in (0,1,2)
+    return type(arg) == int and arg in (cria_pedra_branca(), cria_pedra_neutra(), cria_pedra_preta())
 
 def eh_pedra_branca(p:int) -> bool:
     '''
@@ -195,7 +193,7 @@ def eh_pedra_branca(p:int) -> bool:
     Returns:
             return(Boolean): Devolve True se o argumento for uma pedra branca e False caso contrário 
     '''
-    return p == 1
+    return p == cria_pedra_branca()
 
 def eh_pedra_preta(p:int) -> bool:
     '''
@@ -204,7 +202,7 @@ def eh_pedra_preta(p:int) -> bool:
     Returns:
             return(Boolean): Devolve True se o argumento for uma pedra preta e False caso contrário 
     '''
-    return p== 2
+    return p == cria_pedra_preta()
 
 def pedras_iguais(p1:int,p2:int) -> bool:
     '''
@@ -290,7 +288,7 @@ def cria_goban(n:int,ib:tuple,ip:tuple):
             else:
                 if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]): #Verifica se é uma interseção e se encontra dentro do goban estabelecido
                     raise ValueError('cria_goban: argumentos invalidos')
-                g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_branca()
+                coloca_pedra(g, inter, cria_pedra_branca())
             intervist += (inter),
         intervist = () # As interseções ja visitadas(de forma a detetar se a mesma interseção existe várias vezes)
         for inter in ip:
@@ -299,7 +297,7 @@ def cria_goban(n:int,ib:tuple,ip:tuple):
             else:
                 if not (eh_intersecao(inter) and obtem_lin(inter) <= n and obtem_col(inter) in COLUNAS[:n]): #Verifica se é uma interseção e se encontra dentro do goban estabelecido
                     raise ValueError('cria_goban: argumentos invalidos')
-                g[COLUNAS.index(obtem_col(inter))][obtem_lin(inter)-1] = cria_pedra_preta()
+                coloca_pedra(g, inter, cria_pedra_preta())
             intervist += (inter),
     return g
 
@@ -351,22 +349,22 @@ def obtem_cadeia(g,i):
             return(tuplo): O tuplo formando pelas interseções da cadeia que passa na interseção fornecida
 
     '''
-    tipo = g[COLUNAS.index(obtem_col(i))][obtem_lin(i)-1] # o tipo de pedra da interseção pretendida
+    tipo = obtem_pedra(g,i) # o tipo de pedra da interseção pretendida
     igual, inter, cadeia= (i,), (), ()
     while len(igual) > 0: 
         testcoord = igual[-1] 
         cadeia += (testcoord,)
         interigualtemp = ()
-        for el in obtem_intersecoes_adjacentes(testcoord,obtem_ultima_intersecao(g)):
-            if el not in inter and pedras_iguais(g[COLUNAS.index(obtem_col(el))][obtem_lin(el)-1],tipo):
-                interigualtemp += (el,)
-                inter += (el,) #As interseções que cumprem os requesitos
+        for coord_inter in obtem_intersecoes_adjacentes(cria_intersecao(obtem_col(testcoord), obtem_lin(testcoord)),obtem_ultima_intersecao(g)):
+            if coord_inter not in inter and pedras_iguais(obtem_pedra(g, coord_inter),tipo):
+                interigualtemp += (coord_inter,)
+                inter += (coord_inter,) #As interseções que cumprem os requesitos
         igual = igual[:-1] + interigualtemp # A interseção que foi testada é retirada e adiciona-se as próximas que cumpriam os requesitos
     cadeiafinal = []
-    for el in cadeia:
-        if el not in cadeiafinal: # Retira elementos repeditos da cadeia
-            cadeiafinal += [el]
-    return tuple(ordena_intersecoes(cadeiafinal)) 
+    for inter in cadeia:
+        if inter not in cadeiafinal: # Retira elementos repeditos da cadeia
+            cadeiafinal += [inter]
+    return ordena_intersecoes(tuple(cadeiafinal))
 
 
 def coloca_pedra(g,i,p):
