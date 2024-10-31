@@ -1,6 +1,3 @@
-from ast import cmpop
-
-
 COLUNAS = ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S')
 LINHAS = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19)
 
@@ -18,7 +15,7 @@ def cria_intersecao(col:str,lin:int) -> tuple:
             ValueError: ('cria_intersecao: argumentos invalidos) - caso os argumentos não possam ser validados
 
     '''
-    if isinstance(col, str) and type(lin) == int and col in COLUNAS and lin in LINHAS:
+    if isinstance(col, str) and isinstance(lin, int) and col in COLUNAS and lin in LINHAS:
         return (col, lin)
     raise ValueError('cria_intersecao: argumentos invalidos')
 
@@ -303,7 +300,7 @@ def cria_copia_goban(g):
     Returns:
             return(tuple): Uma cópia independente do tabuleiro de Goban
     '''
-    return tuple([[pedra for pedra in linha] for linha in t])
+    return tuple([[pedra for pedra in linha] for linha in g])
 
 
 def obtem_ultima_intersecao(g) -> tuple:
@@ -637,30 +634,28 @@ def go(g: int, tb: 'tuple[str,...]', tp: 'tuple[str,   ]') -> bool:
         tbinter = tuple(str_para_intersecao(interb) if isinstance(interb, str) else interb for interb in tb)
         tpinter = tuple(str_para_intersecao(interp) if isinstance(interp, str) else interp for interp in tp)
         goban = cria_goban(g, tbinter, tpinter)
-        goant = cria_copia_goban(goban)
     except ValueError as e:
         raise ValueError('go: argumentos invalidos') from e
 
     brancopass = pretopass = False
     i = 0
-
+    goban_inicial = cria_copia_goban(goban)
     while not (brancopass and pretopass):
         pontos_branco, pontos_preto = calcula_pontos(goban)
         print(f'Branco (O) tem {pontos_branco} pontos')
         print(f'Preto (X) tem {pontos_preto} pontos')
         print(goban_para_str(goban))
+        goban_anterior = cria_copia_goban(goban)
 
         if i % 2 == 0:
-            pretopass = not turno_jogador(goban, cria_pedra_preta(), goant)
+            pretopass = not turno_jogador(goban, cria_pedra_preta(), goban_inicial)
         else:
-            brancopass = not turno_jogador(goban, cria_pedra_branca(), goant)
-
-        goant = cria_copia_goban(goban)
+            brancopass = not turno_jogador(goban, cria_pedra_branca(), goban_inicial)
+        
+        goban_inicial = goban_anterior
         i += 1
-
     pontos_branco, pontos_preto = calcula_pontos(goban)
     print(f'Branco (O) tem {pontos_branco} pontos')
     print(f'Preto (X) tem {pontos_preto} pontos')
     print(goban_para_str(goban))
-
     return pontos_branco >= pontos_preto
