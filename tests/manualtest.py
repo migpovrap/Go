@@ -118,17 +118,7 @@ import FP2324P2 as fp
 #l = fp.cria_goban_vazio(9)
 #b, p = fp.cria_pedra_branca(), fp.cria_pedra_preta()
 #ref = \
-"""   A B C D E F G H I
- 9 . . . . . . . . .  9
- 8 . . . . . . . . .  8
- 7 . . . . . . X . .  7
- 6 . . . . . . X . .  6
- 5 . . . . X X . . .  5
- 4 . . . O X X . . .  4
- 3 O O O O . . . . .  3
- 2 X . O O . . . . .  2
- 1 X X O . . . . . .  1
-   A B C D E F G H I"""
+
 #print(fp.eh_jogada_legal(g, fp.cria_intersecao('B', 2), p, l))
 #print(fp.eh_jogada_legal(g, fp.cria_intersecao('B', 2), b, l))
 #print(fp.goban_para_str(g))
@@ -164,47 +154,29 @@ import FP2324P2 as fp
 
 
 
-def remove_cadeia(g,t):
-    '''
-    Remove uma determinada cadeia do tabuleiro de Goban.
-
-    Parameters:
-            g(tuplo): O Tabuleiro de Goban
-            t(tuplo): O conjunto de interseções que formam a cadeia a ser removida
-    Returns:
-            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
-    '''
-    for inter in t:
-        g[fp.COLUNAS.index(fp.obtem_col(inter))][fp.obtem_lin(inter)-1] = 0
-    return g
+#def remove_cadeia(g,t):
+#    '''
+#    Remove uma determinada cadeia do tabuleiro de Goban.
+#    Parameters:
+#            g(tuplo): O Tabuleiro de Goban
+#            t(tuplo): O conjunto de interseções que formam a cadeia a ser removida
+#    Returns:
+#            g(tuplo): Vai modificar destrutivamente o Tabuleiro de Goban
+#    '''
+#    for inter in t:
+#        g[fp.COLUNAS.index(fp.obtem_col(inter))][fp.obtem_lin(inter)-1] = 0
+#    return g
 
 
 
 #g12 = ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-g1 = ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])
+#g1 = ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 #g2 = ([0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 2, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])
 #print(fp.eh_goban(g))
 
 #print(fp.gobans_iguais(g1,g12))
-
-
-
-def gobans_iguais(g1,g2):
-   value = False
-   if fp.eh_goban(g1) and fp.eh_goban(g2):
-       if len(g1) == len(g2):
-           for col in range(len(g1)): #Podemos usar o g1 ou o g2, pois já verificamos que tem o mesmo tamanho
-               if len(g1[col]) == len(g2[col]):
-                   for el in range(len(g1[col])):
-                       if g1[col][el] == g2[col][el]:
-                           value = True
-                       else:
-                           value = False
-   return value
-
-
 
 #print(fp.go(9,(),()))
 
@@ -253,17 +225,8 @@ def gobans_iguais(g1,g2):
 
 #print(fp.eh_goban(((['A',[1],2],1),True)))
 
-'   A B C D E F G H I\n 9 . . . O . O X . .  9\n 8 . . . . O O X . .  8\n 7 . . . . O X . . .  7\n 6 . . . O O X . . .  6\n 5 . . . O X . X . .  5\n 4 O O O O X . . . .  4\n 3 . O . O X . . . .  3\n 2 . O . O X . . . .  2\n 1 . O . X . . . . .  1\n   A B C D E F G H I' 
-'   A B C D E F G H I\n 9 X X X O X O X X X  9\n 8 X X X X O O X X X  8\n 7 X X X X O X X X X  7\n 6 X X X O O X X X X  6\n 5 X X X O X X X X X  5\n 4 O O O O X X X X X  4\n 3 X O X O X X X X X  3\n 2 X O X O X X X X X  2\n 1 X O X X X X X X X  1\n   A B C D E F G H I'
-
-
-#print(fp.obtem_territorios(3))
-
-#print(fp.eh_goban(()))
-#not eh_goban(()) and  not eh_goban({}) and not eh_goban([])
-
 ib = 'B7', 'B8', 'C6', 'D6', 'D8', 'E7', 'E9', 'F7', 'F8', 'F9', 'A5', 'B5', 'A3', 'B3', 'C3', 'D3', 'E3'
 ip = 'C7', 'C8', 'C9', 'D7', 'D9', 'E6', 'F6', 'G7', 'G8', 'C4', 'D4', 'E4', 'A1', 'B1', 'C1', 'D1', 'F1', 'A2', 'B2', 'C2', 'D2', 'F2', 'F3'
-fp.go(9,ib,ip)
+fp.go(9,ib, ip)
 
 #'E8\nD8\nE2\nE1\nD8\nE8\nB4\nA4\nE8\nP\nP\n'
