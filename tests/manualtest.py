@@ -4,7 +4,7 @@ import os
 # Add the parent directory to the Python path
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, parent_dir)
-import FP2324P2 as fp
+import Gogame as fp
 
 
 #print('Test for function intersecao_para_str')

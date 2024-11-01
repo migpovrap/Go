@@ -1,4 +1,4 @@
-from FP2324P2 import go
+from Gogame import go
 
 def main():
     while True:

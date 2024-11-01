@@ -1,33 +1,33 @@
 from random import randint
 
-## TAD pedra
-def cria_pedra_branca():
+## ADT stone
+def new_white_stone():
     return ['pedra', '.O.', 'mais', (3.14, randint(0, 10**6))]
 
-def cria_pedra_preta():
+def new_black_stone():
     return ['pedra', '.X.', 'mais', (3.14, randint(0, 10**6))]
 
-def cria_pedra_neutra():
+def new_empty_stone():
     return ['pedra', '...', 'mais', (3.14, randint(0, 10**6))]
 
-def eh_pedra(arg):
+def is_stone(arg):
     return isinstance(arg, list) and len(arg) == 4 and arg[0] == 'pedra' and arg[2] == 'mais' and \
         isinstance(arg[3], tuple) and arg[3][0] == 3.14 and isinstance(arg[3][1], int) and \
         (arg[1] == '.O.' or arg[1] == '.X.' or arg[1] == '...')
         
-def eh_pedra_branca(arg):
-    return eh_pedra(arg) and arg[1] == '.O.'
+def is_white_stone(arg):
+    return is_stone(arg) and arg[1] == '.O.'
 
-def eh_pedra_preta(arg):
-    return eh_pedra(arg) and arg[1] == '.X.'
+def is_black_stone(arg):
+    return is_stone(arg) and arg[1] == '.X.'
 
-def pedras_iguais(p1, p2):
-    return eh_pedra(p1) and eh_pedra(p2) and p1[1] == p2[1]
+def equals_stones(p1, p2):
+    return is_stone(p1) and is_stone(p2) and p1[1] == p2[1]
 
-def pedra_para_str(p):
-    return p[1][1]
+def stone_to_str(s):
+    return s[1][1]
 
-## FAN pedra!?!? 
-def eh_pedra_jogador(pedra):
-    return eh_pedra_branca(pedra) or eh_pedra_preta(pedra)
+## HLF stone!?!? 
+def is_player_stone(stone):
+    return is_white_stone(stone) or is_black_stone(stone)
 

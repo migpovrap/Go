@@ -1,18 +1,18 @@
 
-def turno_jogador(current, pedra, last_board):
+def player_turn(current, stone, last_board):
     def eh_cadeia_intercecao_ok(cad):
         return isinstance(cad,str) and ((len(cad) == 2 and 'A' <= cad[0] <= 'S' and cad[1] in '0123456789' and 1<= int(cad[1]) <= 9) \
             or (len(cad) == 3 and 'A' <= cad[0] <= 'S' and cad[1] == '1' \
                 and cad[2] in '0123456789' and 1<= int(cad[1:]) <= 19)) 
 
-    jogada_legal = False
-    while not jogada_legal:
-        pos = input(f"Escreva uma intersecao ou 'P' para passar [{pedra_para_str(pedra)}]:")
+    legal_move = False
+    while not legal_move:
+        pos = input(f"Escreva uma intersecao ou 'P' para passar [{stone_to_str(stone)}]:")
         if pos == 'P':
             return False
         elif eh_cadeia_intercecao_ok(pos):
-            pos = str_para_intersecao(pos)
-            jogada_legal = eh_jogada_legal(current, pos, pedra, last_board)
+            pos = str_to_intersection(pos)
+            legal_move = is_move_legal(current, pos, stone, last_board)
             
-    jogada(current, pos, pedra)
+    move(current, pos, stone)
     return True

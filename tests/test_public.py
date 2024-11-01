@@ -5,69 +5,69 @@ import os
 # Add the parent directory to the Python path
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, parent_dir)
-from FP2324P2 import * # <--- Change the name projectoFP to the file name with your project
+from Gogame import * # <--- Change the name projectoFP to the file name with your project
 
-class TestPublicIntersecao:
+class TestPublicIntersection:
 
     def test_1(self):
         with pytest.raises(ValueError) as excinfo:
-            i1 = cria_intersecao('a', 12)        
-        assert "cria_intersecao: argumentos invalidos" == str(excinfo.value)
+            i1 = new_intersection('a', 12)        
+        assert "new_intersection: invalid arguments" == str(excinfo.value)
     
     def test_2(self):
-        assert not intersecoes_iguais(cria_intersecao('A', 2), cria_intersecao('B', 13))
+        assert not equals_intersection(new_intersection('A', 2), new_intersection('B', 13))
 
     def test_3(self):
-        assert intersecoes_iguais(cria_intersecao('A', 2), str_para_intersecao('A2'))
+        assert equals_intersection(new_intersection('A', 2), str_to_intersection('A2'))
 
     def test_4(self):
-        assert intersecao_para_str(cria_intersecao('B', 13)) == 'B13'
+        assert intersection_to_str(new_intersection('B', 13)) == 'B13'
 
     def test_5(self):
-        i1 = cria_intersecao('A', 2)
-        assert ('A1', 'B2', 'A3') == tuple(intersecao_para_str(i) for i in obtem_intersecoes_adjacentes(i1, cria_intersecao('S',19)))
+        i1 = new_intersection('A', 2)
+        assert ('A1', 'B2', 'A3') == tuple(intersection_to_str(i) for i in get_adjacent_intersections(i1, new_intersection('S',19)))
         
     def test_6(self):
-        tup = (cria_intersecao('A',1), cria_intersecao('A',3), cria_intersecao('B',1), cria_intersecao('B',2))
-        assert ('A1', 'B1', 'B2', 'A3') == tuple(intersecao_para_str(i) for i in ordena_intersecoes(tup))
+        tup = (new_intersection('A',1), new_intersection('A',3), new_intersection('B',1), new_intersection('B',2))
+        assert ('A1', 'B1', 'B2', 'A3') == tuple(intersection_to_str(i) for i in sort_intersections(tup))
         
         
-class TestPublicPedra:
+class TestPublicStone:
 
     def test_1(self):
-        assert  eh_pedra(cria_pedra_branca())
+        assert  is_stone(new_white_stone())
 
     def test_2(self):
-        assert not pedras_iguais(cria_pedra_branca(), cria_pedra_preta())
+        assert not equals_stones(new_white_stone(), new_black_stone())
 
     def test_3(self):
-        b, p = cria_pedra_branca(), cria_pedra_preta()
-        assert pedra_para_str(b), pedra_para_str(p) == ('O', 'X')
+        b, p = new_white_stone(), new_black_stone()
+        assert stone_to_str(b), stone_to_str(p) == ('O', 'X')
         
     def test_4(self):
-        assert not eh_pedra_jogador(cria_pedra_neutra())
+        assert not is_player_stone(new_empty_stone())
         
 class TestPublicGoban:
     def test_1(self):
         with pytest.raises(ValueError) as excinfo:
-            g = cria_goban_vazio(10)
-        assert "cria_goban_vazio: argumento invalido" == str(excinfo.value)
+            g = new_empty_goban(10)
+        assert "new_empty_goban: invalid arguments" == str(excinfo.value)
 
     def test_2(self):
-        assert eh_goban(cria_goban_vazio(9))
+        assert is_goban(new_empty_goban(9))
         
     def test_3(self):
-        g = cria_goban_vazio(9)
-        i1 = cria_intersecao('C',8)
-        assert pedra_para_str(obtem_pedra(g,i1)) == '.'
+        g = new_empty_goban(9)
+        i1 = new_intersection('C',8)
+        assert stone_to_str(get_stone(g,i1)) == '.'
         
     def test_4(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
         hyp = \
 """   A B C D E F G H I
  9 . . . . . . . . .  9
@@ -80,66 +80,66 @@ class TestPublicGoban:
  2 . . O O . . . . .  2
  1 . . O . . . . . .  1
    A B C D E F G H I"""
-        assert goban_para_str(g) == hyp
+        assert goban_to_str(g) == hyp
         
     def test_5(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
-        cad = obtem_cadeia(g, cria_intersecao('F',5))
-        assert  tuple(intersecao_para_str(i) for i in cad) == ('E4', 'F4', 'E5', 'F5')
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
+        cad = get_stone_chain(g, new_intersection('F',5))
+        assert  tuple(intersection_to_str(i) for i in cad) == ('E4', 'F4', 'E5', 'F5')
 
     def test_6(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
-        cad = obtem_cadeia(g, cria_intersecao('F',5))
-        liberdades = obtem_adjacentes_diferentes(g, cad)
-        assert tuple(intersecao_para_str(i) for i in liberdades) == ('E3', 'F3', 'G4', 'D5', 'G5', 'E6', 'F6')
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
+        cad = get_stone_chain(g, new_intersection('F',5))
+        liberdades = get_adjacents_different(g, cad)
+        assert tuple(intersection_to_str(i) for i in liberdades) == ('E3', 'F3', 'G4', 'D5', 'G5', 'E6', 'F6')
         
     def test_7(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
-        terr = obtem_territorios(g)
-        assert tuple(intersecao_para_str(i) for i in terr[0]) == ('A1', 'B1', 'A2', 'B2')
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
+        terr = get_territories(g)
+        assert tuple(intersection_to_str(i) for i in terr[0]) == ('A1', 'B1', 'A2', 'B2')
 
     def test_8(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
-        terr = obtem_territorios(g)
-        border = obtem_adjacentes_diferentes(g, terr[0])
-        assert  tuple(intersecao_para_str(i) for i in border) == ('C1', 'C2', 'A3', 'B3')
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
+        terr = get_territories(g)
+        border = get_adjacents_different(g, terr[0])
+        assert  tuple(intersection_to_str(i) for i in border) == ('C1', 'C2', 'A3', 'B3')
 
     def test_9(self):
-        g = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        g = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ib = 'C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'
         ip = 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'
-        for i in ib: coloca_pedra(g, str_para_intersecao(i), b)
-        for i in ip: coloca_pedra(g, str_para_intersecao(i), p)
-        assert obtem_pedras_jogadores(g) == (8, 6)
+        for i in ib: set_stone(g, str_to_intersection(i), b)
+        for i in ip: set_stone(g, str_to_intersection(i), p)
+        assert get_player_stones(g) == (8, 6)
         
     def test_10(self):
-        ib = tuple(str_para_intersecao(i) \
+        ib = tuple(str_to_intersection(i) \
             for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) \
+        ip = tuple(str_to_intersection(i) \
             for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        assert goban_para_str(g) == \
+        g = new_goban(9, ib, ip)
+        assert goban_to_str(g) == \
 """   A B C D E F G H I
  9 . . . . . . . . .  9
  8 . . . . . . . . .  8
@@ -153,14 +153,14 @@ class TestPublicGoban:
    A B C D E F G H I"""
    
     def test_11(self):
-        ib = tuple(str_para_intersecao(i) \
+        ib = tuple(str_to_intersection(i) \
             for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) \
+        ip = tuple(str_to_intersection(i) \
             for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        b = cria_pedra_branca()
-        _ = jogada(g, cria_intersecao('B', 2), b)
-        assert goban_para_str(g) == \
+        g = new_goban(9, ib, ip)
+        b = new_white_stone()
+        _ = move(g, new_intersection('B', 2), b)
+        assert goban_to_str(g) == \
 """   A B C D E F G H I
  9 . . . . . . . . .  9
  8 . . . . . . . . .  8
@@ -196,38 +196,38 @@ class TestPublicGoban:
  2 . . . . . . . . . . . . . . . . . . .  2
  1 . . . . . . . . . . . . . . . . . . .  1
    A B C D E F G H I J K L M N O P Q R S"""
-        assert goban_para_str(cria_goban_vazio(19)) == ref
+        assert goban_to_str(new_empty_goban(19)) == ref
         
-class TestPublicCalculaPontos:
+class TestPublicCalculatePoints:
     def test_1(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        assert calcula_pontos(g) == (12, 6)
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
+        assert calculate_points(g) == (12, 6)
         
-class TestPublicEhJogadaLegal:
+class TestPublicIsMoveLegal:
     def test_1(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        l = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
-        assert not eh_jogada_legal(g, cria_intersecao('B', 2), p, l)
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
+        l = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
+        assert not is_move_legal(g, new_intersection('B', 2), p, l)
         
     def test_2(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        l = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
-        assert eh_jogada_legal(g, cria_intersecao('B', 2), b, l)
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
+        l = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
+        assert is_move_legal(g, new_intersection('B', 2), b, l)
 
     def test_3(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        l = cria_goban_vazio(9)
-        b, p = cria_pedra_branca(), cria_pedra_preta()
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
+        l = new_empty_goban(9)
+        b, p = new_white_stone(), new_black_stone()
         ref = \
 """   A B C D E F G H I
  9 . . . . . . . . .  9
@@ -240,40 +240,40 @@ class TestPublicEhJogadaLegal:
  2 X . O O . . . . .  2
  1 X X O . . . . . .  1
    A B C D E F G H I"""
-        assert (not eh_jogada_legal(g, cria_intersecao('B', 2), p, l)) \
-            and eh_jogada_legal(g, cria_intersecao('B', 2), b, l) \
-                and ref == goban_para_str(g)
+        assert (not is_move_legal(g, new_intersection('B', 2), p, l)) \
+            and is_move_legal(g, new_intersection('B', 2), b, l) \
+                and ref == goban_to_str(g)
 
     def test_4(self):
-        ib = tuple(str_para_intersecao(i) for i in ('A2','B1','B3','C2'))
-        ip = tuple(str_para_intersecao(i) for i in ('C1','C3','D1','D2'))
-        b, p = cria_pedra_branca(), cria_pedra_preta()
-        g = cria_goban(9, ib, ip)
-        g_ko = cria_copia_goban(g)
-        assert eh_jogada_legal(g, cria_intersecao('B', 2), p, g_ko)
+        ib = tuple(str_to_intersection(i) for i in ('A2','B1','B3','C2'))
+        ip = tuple(str_to_intersection(i) for i in ('C1','C3','D1','D2'))
+        b, p = new_white_stone(), new_black_stone()
+        g = new_goban(9, ib, ip)
+        g_ko = copy_goban(g)
+        assert is_move_legal(g, new_intersection('B', 2), p, g_ko)
 
     def test_5(self):
-        ib = tuple(str_para_intersecao(i) for i in ('A2','B1','B3','C2'))
-        ip = tuple(str_para_intersecao(i) for i in ('C1','C3','D1','D2'))
-        b, p = cria_pedra_branca(), cria_pedra_preta()
-        g = cria_goban(9, ib, ip)
-        g_ko = cria_copia_goban(g)
-        jogada(g, cria_intersecao('B', 2), p)   
-        assert not eh_jogada_legal(g, cria_intersecao('B', 2), b, g_ko)
+        ib = tuple(str_to_intersection(i) for i in ('A2','B1','B3','C2'))
+        ip = tuple(str_to_intersection(i) for i in ('C1','C3','D1','D2'))
+        b, p = new_white_stone(), new_black_stone()
+        g = new_goban(9, ib, ip)
+        g_ko = copy_goban(g)
+        move(g, new_intersection('B', 2), p)   
+        assert not is_move_legal(g, new_intersection('B', 2), b, g_ko)
    
-class TestPublicTurnoJogador:
+class TestPublicPlayerTurn:
     def test_1(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
         ref = (True, "Escreva uma intersecao ou 'P' para passar [X]:Escreva uma intersecao ou 'P' para passar [X]:Escreva uma intersecao ou 'P' para passar [X]:")
-        assert turno_jogador_offline(g, cria_pedra_preta(), cria_goban_vazio(9), 'B10\nB2\nG5\n') == ref
+        assert offline_player_turn(g, new_black_stone(), new_empty_goban(9), 'B10\nB2\nG5\n') == ref
 
     def test_2(self):
-        ib = tuple(str_para_intersecao(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
-        ip = tuple(str_para_intersecao(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
-        g = cria_goban(9, ib, ip)
-        turno_jogador_offline(g, cria_pedra_preta(), cria_goban_vazio(9), 'B10\nB2\nG5\n')
+        ib = tuple(str_to_intersection(i) for i in ('C1', 'C2', 'C3', 'D2', 'D3', 'D4', 'A3', 'B3'))
+        ip = tuple(str_to_intersection(i) for i in ('A1', 'A2', 'B1', 'E4', 'E5', 'F4', 'F5', 'G6', 'G7'))
+        g = new_goban(9, ib, ip)
+        offline_player_turn(g, new_black_stone(), new_empty_goban(9), 'B10\nB2\nG5\n')
         ref = \
 """   A B C D E F G H I
  9 . . . . . . . . .  9
@@ -286,7 +286,7 @@ class TestPublicTurnoJogador:
  2 X . O O . . . . .  2
  1 X X O . . . . . .  1
    A B C D E F G H I"""
-        assert goban_para_str(g) == ref
+        assert goban_to_str(g) == ref
    
 class TestPublicGo:
     def test_1(self):
@@ -324,7 +324,7 @@ class ReplaceStdOut:
         return 
 
 
-def turno_jogador_offline(board, pedra, last, input_jogo):
+def offline_player_turn(board, pedra, last, input_jogo):
     oldstdin = sys.stdin
     sys.stdin = ReplaceStdIn(input_handle=input_jogo)
     
@@ -332,7 +332,7 @@ def turno_jogador_offline(board, pedra, last, input_jogo):
     sys.stdout = newstdout
 
     try:
-        res = turno_jogador(board, pedra, last)
+        res = player_turn(board, pedra, last)
         text = newstdout.output
         return res, text
     except ValueError as e:
