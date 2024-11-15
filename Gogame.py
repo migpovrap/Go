@@ -2,7 +2,7 @@ COLUMNS = ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','
 ROWS = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19)
 
 # ADT intersection
-def new_intersection(col:str,row:int) -> tuple:
+def new_intersection(col:str,row:int) -> 'tuple[str,int]':
     '''
     Intersection Constructor, returns an intersection if the given arguments
     meet the following conditions:
@@ -25,7 +25,7 @@ def new_intersection(col:str,row:int) -> tuple:
     raise ValueError('new_intersection: invalid arguments')
 
 
-def get_col(i:tuple) -> str:
+def get_col(i:'tuple[str,int]') -> str:
     '''
     Function that gets columns of an intersection
 
@@ -37,7 +37,7 @@ def get_col(i:tuple) -> str:
     return i[0]
 
 
-def get_row(i:tuple) -> int:
+def get_row(i:'tuple[str,int]') -> int:
     '''
     Function that gets the row of an intersection
 
@@ -49,7 +49,7 @@ def get_row(i:tuple) -> int:
     return i[1]
 
 
-def is_intersection(arg:tuple) -> bool:
+def is_intersection(arg:'tuple[str,int]') -> bool:
     '''
     Verifies if a arguments is a intersection.
 
@@ -68,7 +68,7 @@ def is_intersection(arg:tuple) -> bool:
     return False
 
 
-def equals_intersection(i1:tuple,i2:tuple) -> bool:
+def equals_intersection(i1:'tuple[str,int]',i2:'tuple[str,int]') -> bool:
     '''
     Checks if two intersections are equal.
 
@@ -82,7 +82,7 @@ def equals_intersection(i1:tuple,i2:tuple) -> bool:
     get_col(i1) == get_col(i2) and get_row(i1) == get_row(i2)
 
 
-def intersection_to_str(i:tuple) -> str:
+def intersection_to_str(i:'tuple[str,int]') -> str:
     '''
     Transforms an intersection from its internal format to its externa\
     representation.
@@ -94,7 +94,7 @@ def intersection_to_str(i:tuple) -> str:
     '''
     return get_col(i) + str(get_row(i))
 
-def str_to_intersection(string :str):
+def str_to_intersection(string :str) -> 'tuple[str,int]':
     '''
     Transforms the external representation of an intersection to its internal\
     representation.
@@ -111,7 +111,7 @@ def str_to_intersection(string :str):
 # High level functions that are associated wiht the adt intersection
 # Reading order of goban is (left to right, bottom  to top)
 
-def get_adjacent_intersections(i:tuple, l:tuple) -> tuple:
+def get_adjacent_intersections(i:'tuple[str,int]', l:'tuple[str,int]') -> 'tuple[tuple[str,int], ...]':
     '''
     Gets the intersections that are adjacent to a given intersection, which\
     are located above, below, left, or right.
@@ -138,7 +138,7 @@ def get_adjacent_intersections(i:tuple, l:tuple) -> tuple:
     return sort_intersections(tuple(adj_intersec))
 
 
-def sort_intersections(tup:tuple) -> tuple:
+def sort_intersections(tup:'tuple[str,int]') -> 'tuple[tuple[str,int], ...]':
     '''
     Sorts the provided tuple of intersections according to the reading order\
     of the Goban board.
@@ -248,7 +248,7 @@ def stone_to_str(st:str) -> str:
 
 
 # High level functions that are associated with ADT stone
-def is_player_stone(st):
+def is_player_stone(st:any) -> bool:
     '''
     Checks if a stone belongs to a player or is a neutral stone.
 
@@ -263,7 +263,7 @@ def is_player_stone(st):
 
 # ADT Goban
 # The game board is represented as a tuple of lists ([],[],[])
-def new_empty_goban(size:int) -> tuple:
+def new_empty_goban(size:int) -> 'tuple[tuple[str,int], ...]':
     '''
     Creates a goban with the desired size, either 9x9, 13x13, or 19x19.
 
@@ -278,7 +278,7 @@ def new_empty_goban(size:int) -> tuple:
             # internal representation of the empty goban
     raise ValueError('new_empty_goban: invalid arguments')
 
-def new_goban(size:int, winter:tuple, binter:tuple) -> tuple:
+def new_goban(size:int, winter:'tuple[tuple[str,int], ...]', binter:'tuple[tuple[str,int], ...]') -> 'tuple[tuple[str,int], ...]':
     '''
     Creates a goban with the desired size and places it in the indicated\
     state with white and black stones.
@@ -300,7 +300,8 @@ def new_goban(size:int, winter:tuple, binter:tuple) -> tuple:
     ocupied_inter = set()
 
     for inter in winter:
-        if not is_intersection(inter) or get_row(inter) > size or get_col(inter) not in COLUMNS[:size]:
+        if not is_intersection(inter) or get_row(inter) > size or get_col(inter)\
+            not in COLUMNS[:size]:
             raise ValueError('new_goban: invalid arguments')
         if inter in ocupied_inter:
             raise ValueError('new_goban: invalid arguments')
@@ -308,7 +309,8 @@ def new_goban(size:int, winter:tuple, binter:tuple) -> tuple:
         ocupied_inter.add(inter)
 
     for inter in binter:
-        if not is_intersection(inter) or get_row(inter) > size or get_col(inter) not in COLUMNS[:size]:
+        if not is_intersection(inter) or get_row(inter) > size or get_col(inter)\
+            not in COLUMNS[:size]:
             raise ValueError('new_goban: invalid arguments')
         if inter in ocupied_inter:
             raise ValueError('new_goban: invalid arguments')
@@ -317,7 +319,7 @@ def new_goban(size:int, winter:tuple, binter:tuple) -> tuple:
 
     return g
 
-def copy_goban(g:tuple) -> tuple:
+def copy_goban(g:'tuple[tuple[str,int], ...]') -> 'tuple[tuple[str,int], ...]':
     '''
     Creates an independent copy of the Goban board
 
@@ -329,7 +331,7 @@ def copy_goban(g:tuple) -> tuple:
     return tuple([[stone for stone in row] for row in g])
 
 
-def get_last_intersection(g:tuple) -> tuple:
+def get_last_intersection(g:'tuple[tuple[str,int], ...]') -> 'tuple[str,int]':
     '''
     Gets the last intersection of a given Goban board, which is the intersection\
     at the top right corner.
@@ -342,7 +344,7 @@ def get_last_intersection(g:tuple) -> tuple:
     return new_intersection(COLUMNS[len(g)-1], len(g))
 
 
-def get_stone(g:tuple,i:tuple) -> str:
+def get_stone(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]') -> str:
     '''
     Returns the internal representation of the stone.
 
@@ -353,7 +355,7 @@ def get_stone(g:tuple,i:tuple) -> str:
     return g[get_row(i)-1][COLUMNS.index(get_col(i))]
 
 
-def get_stone_chain(g:tuple,i:tuple) -> tuple:
+def get_stone_chain(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]') -> 'tuple[tuple[str,int], ...]':
     '''
     Gets the chain of stones that pass through the given intersection.
     If the position is empty, returns the chain of empty positions.
@@ -377,7 +379,7 @@ def get_stone_chain(g:tuple,i:tuple) -> tuple:
     return sort_intersections(tuple(chain))
 
 
-def set_stone(g:tuple,i:tuple,p:str) -> tuple:
+def set_stone(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]',p:str) -> 'tuple[tuple[str,int], ...]':
     '''
     Places the stone at a specific intersection on the Goban board.
 
@@ -391,7 +393,7 @@ def set_stone(g:tuple,i:tuple,p:str) -> tuple:
     g[get_row(i)-1][COLUMNS.index(get_col(i))] = p
     return g
 
-def remove_stone(g:tuple,i:tuple) -> tuple:
+def remove_stone(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]') -> 'tuple[tuple[str,int], ...]':
     '''
     Removes the stone at a specific intersection on the Goban board.
 
@@ -405,7 +407,7 @@ def remove_stone(g:tuple,i:tuple) -> tuple:
     return g
 
 
-def remove_stone_chain(g:tuple, t:tuple) -> tuple:
+def remove_stone_chain(g:'tuple[tuple[str,int], ...]', t:'tuple[str,int]') -> 'tuple[tuple[str,int], ...]':
     '''
     Removes a specific chain from the Goban board.
 
@@ -420,7 +422,7 @@ def remove_stone_chain(g:tuple, t:tuple) -> tuple:
     return g
 
 
-def is_goban(arg:tuple) -> bool:
+def is_goban(arg:'tuple[tuple[str,int], ...]') -> bool:
     '''
     Checks if the provided argument is a goban.
 
@@ -436,7 +438,7 @@ def is_goban(arg:tuple) -> bool:
     return False
 
 
-def is_valid_intersection(g:tuple,i:tuple) -> bool:
+def is_valid_intersection(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]') -> bool:
     '''
     Checks if the provided arguments are valid and subsequently verifies if the\
     given intersection exists on the Goban board.
@@ -452,7 +454,7 @@ def is_valid_intersection(g:tuple,i:tuple) -> bool:
     and 1 <= get_row(i) <= len(g)
 
 
-def goban_equals(g1:tuple,g2:tuple) -> bool:
+def goban_equals(g1:'tuple[tuple[str,int], ...]',g2:'tuple[tuple[str,int], ...]') -> bool:
     '''
     Checks if the two Goban boards are equal.
 
@@ -465,12 +467,12 @@ def goban_equals(g1:tuple,g2:tuple) -> bool:
     '''
     if not (is_goban(g1) and is_goban(g2) and len(g1) == len(g2)):
         return False
-    return all(equals_stones(get_stone(g1, new_intersection(COLUMNS[col], lin + 1)),
-    get_stone(g2, new_intersection(COLUMNS[col], lin + 1)))
-    for lin, row in enumerate(g1) for col, _ in enumerate(row))
+    return all(equals_stones(get_stone(g1, new_intersection(COLUMNS[col], row + 1)),
+    get_stone(g2, new_intersection(COLUMNS[col], row + 1)))
+    for row, rows in enumerate(g1) for col, _ in enumerate(rows))
 
 
-def goban_to_str(g:tuple) -> str:
+def goban_to_str(g:'tuple[tuple[str,int], ...]') -> str:
     '''
     Transforms the internal representation of the Goban board into its\
     external representation.
@@ -491,7 +493,7 @@ def goban_to_str(g:tuple) -> str:
     return gobanstr
 
 # High level functions associated with the ADT goban
-def get_territories(g:tuple) -> tuple:
+def get_territories(g:'tuple[tuple[str,int], ...]') -> 'tuple[tuple[str,int], ...]':
     '''
     Gets the territories that exist on a given Goban board, whether they belong\
     to a specific player or not.
@@ -521,7 +523,7 @@ def get_territories(g:tuple) -> tuple:
     return tuple(sorted(terr, key=lambda t: get_row(t[0])))
 
 
-def get_adjacents_different(g:tuple, t:tuple) -> tuple:
+def get_adjacents_different(g:'tuple[tuple[str,int], ...]', t:'tuple[tuple[str,int], ...]') -> 'tuple[tuple[str,int], ...]':
     '''
     Gets the set of intersections adjacent to a given territory.
 
@@ -543,7 +545,7 @@ def get_adjacents_different(g:tuple, t:tuple) -> tuple:
     return sort_intersections(tuple(adj))
 
 
-def move(g:tuple, i:tuple, p:str) -> tuple:
+def move(g:'tuple[tuple[str,int], ...]', i:'tuple[str,int]', p:str) -> 'tuple[tuple[str,int], ...]':
     '''
     The function that is used to execute a move, will place the stone in the\
     requested position and capture the opponent's stones if necessary.
@@ -572,7 +574,7 @@ def move(g:tuple, i:tuple, p:str) -> tuple:
                 remove_stone_chain(g,otherplayer_chain)
     return g
 
-def get_player_stones(g:tuple) -> tuple:
+def get_player_stones(g:'tuple[tuple[str,int], ...]') -> 'tuple[int, int]':
     '''
     Counts the number of intersections occupied by each player's stones.
 
@@ -580,7 +582,7 @@ def get_player_stones(g:tuple) -> tuple:
             g(tuple): the Goban board
     Returns:
             return(tuple): tuple containing the number of white and black\
-            stones respectively (nb, np)
+            stones respectively (wn, bn)
 
     '''
     dim = get_row(get_last_intersection(g))
@@ -592,7 +594,7 @@ def get_player_stones(g:tuple) -> tuple:
 
 
 # Aditional functions
-def calculate_points(g:tuple) -> tuple:
+def calculate_points(g:'tuple[tuple[str,int], ...]') -> 'tuple[int, int]':
     '''
     Calculates the points each player has in the current state of the goban board (g)
 
@@ -613,7 +615,7 @@ def calculate_points(g:tuple) -> tuple:
     # the number of stones they have in the territory
 
 
-def is_move_legal(g:tuple,i:tuple,s:str,l:tuple) -> bool:
+def is_move_legal(g:'tuple[tuple[str,int], ...]',i:'tuple[str,int]',s:str,l:'tuple[tuple[str,int], ...]') -> bool:
     '''
     Checks if a move is legal or not, if it is a valid intersection, if it is\
     empty, if it is not a suicide, or repetition (ko) - after resolution the\
@@ -642,7 +644,7 @@ def is_move_legal(g:tuple,i:tuple,s:str,l:tuple) -> bool:
     # Checks the suicide rule
     return get_adjacents_different(goban_copy, get_stone_chain(goban_copy, i))
 
-def player_turn(g:tuple,s:str,l:tuple) -> bool:
+def player_turn(g:'tuple[tuple[str,int], ...]',s:str,l:'tuple[tuple[str,int], ...]') -> bool:
     '''
     Each player's turn, returns False if the player passes their turn 'P' and\
     returns True if the player makes a legal move and destructively modifies the\
@@ -673,7 +675,7 @@ def player_turn(g:tuple,s:str,l:tuple) -> bool:
             continue
 
 
-def go(g: int, tb: 'tuple[str,...]', tp: 'tuple[str,   ]') -> bool:
+def go(g: int, tb: 'tuple[str, ...]', tp: 'tuple[str, ...]') -> bool:
     '''
     Main function that allows two people to play a complete game of goban
 
